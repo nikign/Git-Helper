@@ -1,6 +1,7 @@
 # Software Engineering-2016 Spring
-## We are team H.
+## We are team H
 ### Good Job.
+
 Found the Problem - Feb 1/
 ======================================================= 
 Software_Engineering_Project_Proposal.pdf
