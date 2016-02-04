@@ -1,14 +1,5 @@
 # Software Engineering-2016 Spring
-## We are team H
-### Good Job.
+## We are team H.
 
-Found the Problem - Feb 1/
-======================================================= 
-Software_Engineering_Project_Proposal.pdf
-
-Implement Solution - March 1/
-======================================================= 
-1. Solution_summary.txt
-2. Code
-
-add comments: Linting 
+#Software_Engineering_Project_Proposal.pdf
+Define the problems we found.
