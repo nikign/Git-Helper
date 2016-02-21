@@ -3,13 +3,19 @@ from email.mime.text import MIMEText
 import poplib
 import smtplib
 
+from bs4 import BeautifulSoup
+# pip install BeautifulSoup4
 
 def get_message_info(message):
     message_info = parser.Parser().parsestr("\n".join(message))
     sender = message_info['From']
     subj = message_info['Subject']
     return sender, subj
-    
+
+def covert_html_to_text(message):
+    # from bs4 import BeautifulSoup
+    soup = BeautifulSoup(message)
+    return soup.get_text()
 
 def get_text_message(message):
     for idx, item in enumerate(message):
@@ -30,7 +36,7 @@ def get_text_message(message):
             div_close += item.count('</div>')
             text_message += item
     
-    return text_message, sender, subj
+    return text_message
 
 
 def check_mail():
@@ -51,6 +57,7 @@ def check_mail():
     for i in range(numMessages):
         msg = pop_conn.retr(i+1)[1] # new statement
         msg_text = get_text_message(msg)
+        msg_text = covert_html_to_text(msg_text)
         sender, subj = get_message_info(msg)
         send_mail(mail_server, sender, subj, msg_text)
 
