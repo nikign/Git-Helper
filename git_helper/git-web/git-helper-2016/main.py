@@ -19,6 +19,8 @@ import os
 import webapp2
 import jinja2
 
+from rate_results import get_web_results
+
 template_dir = os.path.join(os.path.dirname(__file__), 'site')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                 autoescape = True)
@@ -39,6 +41,8 @@ class MainPage(Handler):
         self.render("index.html")
     def post(self):
         key = self.request.get('key')
+        res = get_web_results(key)
+        print res
         self.redirect("/result")
 
 class ResultPage(Handler):
