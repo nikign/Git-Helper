@@ -43,14 +43,9 @@ class MainPage(Handler):
         key = self.request.get('key')
         res = get_web_results(key)
         print res
-        self.redirect("/result")
-
-class ResultPage(Handler):
-    def get(self):
-        self.render("result.html")
+        self.render("result.html",result = res,key=key)
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/result',ResultPage),
+    ('/', MainPage)
 ], debug=True)

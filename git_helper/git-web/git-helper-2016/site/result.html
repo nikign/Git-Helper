@@ -1,4 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="row">
+<div class="col-md-offset-2 col-md-1">
+  <a href="./">
+  <img src="/image/logo.jpg" width="150" height="46" alt="Git Helper" ></img>
+  </a>
+</div>
+<div class="col-md-7">
+  <div id="input_box" class="text-center">
+    <form method="post" class="form-inline">
+      <div class="input-group form-group">
+        <input type="text" class="form-control input-lg" size="50" value="{{key}}" name="key">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-default input-lg">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+  </div>
+
+</div>
+<hr class="draw_line">
+
+<div class="">
 <h1>Here is the result page.</h1>
+{% if result %}
+  {% for item in result %}
+  <ol>
+    <p>
+      {{item.title}}
+    </p>
+    <p class="text-success">
+      {{item.abstract}}
+    </p>
+    <a href="{{item.link}}">
+      {{item.link}}
+    </a>
+  </ol>
+  {% endfor %}
+{% endif %}
+</div>
 {% endblock %}
