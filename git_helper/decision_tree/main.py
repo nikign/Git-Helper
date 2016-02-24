@@ -2,6 +2,8 @@ from colorama import init
 import subprocess
 from colorama import Fore, Back, Style
 import sys
+import constant
+import os
 
 # init colorama
 init()
@@ -11,44 +13,93 @@ def main():
     greeting()
     
     cmd = ''
-    pwd = subprocess.check_output('pwd').rstrip() + '/$ '
     result = ''
 
     while cmd != 'q' and cmd != 'quit':
         runCommand(cmd)
         cmd = getCommand()
-        print (cmd)
         
     print('See you next time!')
     
     return
+    
+###########################################
+# FUNCTIONS
+###########################################
 
 # run git commands and print result
 def runCommand(cmd):
-    if cmd != '':
-        try:
-            result = subprocess.check_output(cmd)
-            print(result)
-        except subprocess.CalledProcessError as e:
-            print(e.output)
-        except WindowsError as e:
-            print(e)
+    if cmd == '':
+        return
+    elif isSpecialCommand(cmd):
+        runSpecialCommand(cmd)
+    else:
+        runCommonCommands(cmd)
     return
 
 # print pwd and get commands from user
 def getCommand():
-    pwd = subprocess.check_output('pwd').rstrip() + '/$ '
+    pwd = os.getcwd().rstrip() + ' $ '
     return raw_input(pwd)
+
+# get command name from a command
+def getCommandName(cmd):
+    end = cmd.find(' ');
+    if end == -1:
+        return cmd
+    else:
+        return cmd[0:end].lower()
 
 # welcome words
 def greeting():
     print(Fore.RED + Back.GREEN + 'Welcome to git helper!')
     print(Style.RESET_ALL)
 
+# check if is special command that can't run by subprocess.check_output()
+def isSpecialCommand(cmd):
+    cmdName = getCommandName(cmd)
+    if specialCommands.has_key(cmdName):
+        return True
+    else:
+        return False
+
+# run common commands
+def runCommonCommands(cmd):
+    try:
+        result = subprocess.check_output(cmd)
+        print(result)
+    except subprocess.CalledProcessError as e:
+        print(e.output)
+    except WindowsError as e:
+        print(e)
+    return
+    
+# run special commands
+def runSpecialCommand(cmd):
+    specialCommands[getCommandName(cmd)](cmd)
+    return
+
+def runCdCommand(cmd):
+    begin = cmd.find(' ')
+    if begin == -1:
+        runCommonCommands(cmd)
+    else:
+        cmdBody = cmd[begin+1:]
+        try:
+            os.chdir(cmdBody)
+        except os.error as e:
+            print (e.strerror)
+        except WindowsError as e:
+            print (e)
+    return
 
 
-
-
+##################################################
+# Constants
+##################################################
+specialCommands = {
+    'cd': runCdCommand
+}
 
 
 
