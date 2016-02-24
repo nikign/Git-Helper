@@ -15,13 +15,15 @@ Inputdata = [pattern.sub('', data) for data in Inputdata]
 
 
 Inputdata_tfidf = TfidfVectorizer().fit_transform(Inputdata)
-
+print Inputdata_tfidf
+print '#'
+print Inputdata_tfidf[0:1]
 
 cosine_similarities = linear_kernel(Inputdata_tfidf[0:1], Inputdata_tfidf).flatten()
 
 related_docs_indices = cosine_similarities.argsort()[:-5:-1]
 cosine_similarities[related_docs_indices]
 
-print cosine_similarities[related_docs_indices]
+print cosine_similarities
 print related_docs_indices
 
