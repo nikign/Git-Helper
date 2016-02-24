@@ -1,4 +1,5 @@
 from utils import get_html_text
+from bs4 import BeautifulSoup
 
 class QuestionParser():
 	# initialized with the html file of stack overflow page, 
