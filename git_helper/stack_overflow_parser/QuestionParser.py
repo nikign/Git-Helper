@@ -26,7 +26,7 @@ class QuestionParser():
 			question = {
 				'text': question_text,
 				'title': question_title,
-				'votes': question_votes
+				'votes': eval(question_votes)
 			}
 			return question
 
