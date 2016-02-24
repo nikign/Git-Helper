@@ -1,4 +1,5 @@
 from utils import get_html_text
+from bs4 import BeautifulSoup
 
 class QuestionParser():
 	# initialized with the html file of stack overflow page, 
@@ -25,7 +26,7 @@ class QuestionParser():
 			question = {
 				'text': question_text,
 				'title': question_title,
-				'votes': question_votes
+				'votes': eval(question_votes)
 			}
 			return question
 
