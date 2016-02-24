@@ -12,3 +12,7 @@ def make_mock_results():
 def get_web_results(search_phrase):
 	res = make_mock_results()
 	return res
+
+def get_email_result(error_message):
+	res = "Text from first result in ranking for %s" % error_message
+	return res
