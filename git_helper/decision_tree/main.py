@@ -66,12 +66,12 @@ def isSpecialCommand(cmd):
 # run common commands
 def runCommonCommands(cmd):
     try:
-        result = subprocess.check_output(cmd)
+        result = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         print(result)
     except subprocess.CalledProcessError as e:
         print(e.output)
     except WindowsError as e:
-        print(e)
+        print(e.strerror)
     return
     
 # run special commands
