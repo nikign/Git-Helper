@@ -1,3 +1,5 @@
+from git_helper.GoogleSearch.googleserach import main_search
+
 
 def make_mock_results():
 	l = []

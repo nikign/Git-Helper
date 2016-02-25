@@ -28,10 +28,27 @@ def target_words_extract(ErrorMessageFromUser):
 
 
 def remove_punctuation(InputString):
+    """
+    Remove punctuation.
+    """
+
     for char in string.punctuation:
         InputString = InputString.replace(char, ' ')
 
     return InputString
+
+
+def filter_result(Input, indexs):
+    """
+    Filter result with new ranks or index
+
+    """
+    Output = []
+    for item in Input:
+        NewItem = [item[index] for index in indexs]
+        Output.append(NewItem)
+    return Output
+
 
 
 def cleanStrings(InputStringsList):
@@ -101,7 +118,7 @@ def rank_tfidfMatrix(tfidf_matrix, votes):
     """
     rank result by tifidf value, weight and votes.
     """
-    Top = 2 #top 2 result
+    Top = 5 #top 2 result
     tfidf_matrix['votes'] = 0 #list of votes[1,2,3]
     print tfidf_matrix
     size = tfidf_matrix.shape
@@ -121,28 +138,3 @@ def rank_tfidfMatrix(tfidf_matrix, votes):
     print "==================================================================="
     print TopBest
     return TopBest.index
-
-
-
-"""
-
-ErrorChars= target_words_extract("git commit error pathspect commit did not match any files known to git")
-
-ErrorString = ["today weather is good"]
-Inputdata = ["The is is is sky is blue.", "The sun is bright.", "The sun in the sky is bright."]
-
-#Inputdata = pd.DataFrame(Inputdata, columns= ["data"])
-
-#ErrorString = pd.DataFrame(ErrorString, columns=["error"])
-
-
-#temp = pd.np.array(Inputdata)
-#InputdataList = temp.tolist()
-#print InputdataList
-WebIndex_afterSim = cal_title_similarity(ErrorString, Inputdata)
-
-ErrorChars = ['blue', 'bright','blue']
-result = cal_tfidf(ErrorChars, Inputdata)
-print result
-print rank(result, 0)
-"""

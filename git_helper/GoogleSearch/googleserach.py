@@ -1,12 +1,8 @@
 __author__ = 'linting Xue'
-from lxml import html
 import requests
-import json
-import urllib2
 from google import search
 from git_helper.stack_overflow_parser.QuestionParser import QuestionParser
 from git_helper.stack_overflow_parser.AnswerParser import AnswerParser
-from pprint import pprint
 
 import TFIDF_cal as SortUtils
 
@@ -27,7 +23,9 @@ def google_search_engine(query):
     return Links
 
 
-
+# -------------------------------------------------------
+# Google search return links
+# -------------------------------------------------------
 def scrape_webs_dumpfile(link):
     """
     Dump web content html file to WebContent.txt
@@ -102,6 +100,7 @@ def main_search(Query):
     #extract chars from string error
     [Query_clean] = SortUtils.cleanStrings([Query])
     QueryChars = SortUtils.target_words_extract(Query_clean)
+    print "QueryChars is:", QueryChars
 
     QuestionContent = SortUtils.cleanStrings(QuestionContent)
     AnswerContent = SortUtils.cleanStrings(AnswerContent)
@@ -129,12 +128,32 @@ def main_search(Query):
     #print len(QuestionAndAnswerContent), QuestionAndAnswerContent
 
 
+    # Use similarity to filter result
+    SimilairtyResult_index = SortUtils.cal_title_similarity([Query], QuestionContent, 0.2)
+    print "SimilairtyResult is: ", SimilairtyResult_index
 
-    print "QueryChars is:", QueryChars
+    [Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
+        SortUtils.filter_result([Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent],SimilairtyResult_index)
+
+    print "==================================================================="
+    print "                              Links                                "
+    print "==================================================================="
+    print len(Links_RemoveEmpty), Links_RemoveEmpty
+
+    print "==================================================================="
+    print "                          Question Content                         "
+    print "==================================================================="
+    print len(QuestionContent), QuestionContent
+    print "==================================================================="
+    print "                           Answer Content                          "
+    print "==================================================================="
+    print len(AnswerContent), AnswerContent
+    print "==================================================================="
+    print "                 Question&Answer Content                          "
+    print "==================================================================="
+    print len(QuestionAndAnswerContent), QuestionAndAnswerContent
 
 
-    SimilairtyResult = SortUtils.cal_title_similarity([Query], QuestionContent, 0.1)
-    print "SimilairtyResult is: ", SimilairtyResult
 
 
     TfidfValueMatrix = SortUtils.cal_tfidf(QueryChars, QuestionAndAnswerContent)
@@ -146,8 +165,8 @@ def main_search(Query):
 
 
 
-if __name__ == '__main__':
-    TopResult = main_search(Query)
+#if __name__ == '__main__':
+#    TopResult = main_search(Query)
 
 
 
