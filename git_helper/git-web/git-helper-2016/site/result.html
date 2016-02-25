@@ -24,21 +24,26 @@
 </div>
 <hr class="draw_line">
 
-<div class="">
-<h1>Here is the result page.</h1>
+<div>
 {% if result %}
   {% for item in result %}
-  <ol>
-    <p>
-      {{item.title}}
-    </p>
-    <p class="text-success">
-      {{item.abstract}}
-    </p>
-    <a href="{{item.link}}">
-      {{item.link}}
-    </a>
-  </ol>
+
+  <div class="row">
+    <div class="col-md-offset-1 col-md-8">
+      <h3>
+        <a href="{{item.link}}" target="_blank">
+          {{item.title}}
+        </a>
+      </h3>
+      <p>
+        {{item.abstract}}
+      </p>
+      <a class="text-success" href="{{item.link}}" target="_blank">
+        {{item.link}}
+      </a>
+    </div>
+  </div>
+  <hr>
   {% endfor %}
 {% endif %}
 </div>
