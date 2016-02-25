@@ -8,6 +8,7 @@ import numpy as np
 import numpy.linalg as LA
 import pandas as pd
 from sklearn.metrics.pairwise import linear_kernel
+import string
 
 
 def target_words_extract(ErrorMessageFromUser):
@@ -16,13 +17,36 @@ def target_words_extract(ErrorMessageFromUser):
     ErrorMessageFromUser:
 
     """
-    pattern = re.compile(r'\b(' + r'|'.join(stopwords.words('english')) + r')\b\s*')
-    ErrorChars = pattern.sub('', ErrorMessageFromUser)
 
+    replaceList = ["(", ")", ".", ":", ]
+    pattern = re.compile(r'\b(' + r'|'.join(stopwords.words('english')) + r')\b\s*')
+    ErrorMessage = pattern.sub('', ErrorMessageFromUser)
+
+    ErrorChars = ErrorMessage.split(' ')
+    ErrorChars = filter(None, ErrorChars)
     return ErrorChars
 
 
-def cal_title_similarity(ErrorString, WebTitleList):
+def remove_punctuation(InputString):
+    for char in string.punctuation:
+        InputString = InputString.replace(char, ' ')
+
+    return InputString
+
+
+def cleanStrings(InputStringsList):
+    """
+    Remove stopwords punctuation, make all captial to lowercase.
+    """
+    CleanStringList = []
+    for InputString in InputStringsList:
+        InputString = remove_punctuation(InputString)
+        InputString = InputString.lower()
+        CleanStringList.append(InputString)
+
+    return CleanStringList
+
+def cal_title_similarity(ErrorString, WebTitleList, Threshold):
     """
     calculate web similarity.
     ErrorString: a list with one sentence of error, eg. ["push error conflict"]
@@ -35,10 +59,15 @@ def cal_title_similarity(ErrorString, WebTitleList):
     print "cosine_similarities is:"
     print cosine_similarities
     simliarities = pd.DataFrame(cosine_similarities[1:], columns = ["similarity"])
-    print "similarities is:"
+    print "==================================================================="
+    print "Original similarities is:"
+    print "==================================================================="
+
     print simliarities
-    result = simliarities[simliarities["similarity"]>=0.1]
-    print "Final result:"
+    result = simliarities[simliarities["similarity"]>=Threshold]
+    print "==================================================================="
+    print "Similarity over then %d:" % Threshold
+    print "==================================================================="
     print result
     webIndex_AfterSim = result.index
 
@@ -57,10 +86,18 @@ def cal_tfidf(ErrorChars, WebContentList):
     Words_asHeader = tf.get_feature_names()
     tfidf_values = Tfidf_matrix.todense()
     tfidf_values = pd.DataFrame(tfidf_values, columns = Words_asHeader)
+    print "==================================================================="
+    print " All words Tfidf value :", tfidf_values.shape
+    print "==================================================================="
+    print tfidf_values
+    print "==================================================================="
+    print "Error words Tfidf value:", tfidf_values[ErrorChars].shape
+    print "==================================================================="
+    print tfidf_values[ErrorChars]
 
     return tfidf_values[ErrorChars]
 
-def rank(tfidf_matrix, votes):
+def rank_tfidfMatrix(tfidf_matrix, votes):
     """
     rank result by tifidf value, weight and votes.
     """
@@ -75,13 +112,19 @@ def rank(tfidf_matrix, votes):
     tfidf_matrix['sum'] = tfidf_matrix.sum(axis=1)# add nuw column named 'sum'
     tfidf_matrix = tfidf_matrix.sort(['sum'], ascending = False) #sort datafram based on 'sum' column
     TopBest = tfidf_matrix.head(Top) # get top best result and return their index
-
+    print "==================================================================="
+    print "Ranked tfidf_Matrix"
+    print "==================================================================="
     print tfidf_matrix
+    print "==================================================================="
+    print "Top best %d" % Top
+    print "==================================================================="
     print TopBest
     return TopBest.index
 
 
 
+"""
 
 ErrorChars= target_words_extract("git commit error pathspect commit did not match any files known to git")
 
@@ -102,3 +145,4 @@ ErrorChars = ['blue', 'bright','blue']
 result = cal_tfidf(ErrorChars, Inputdata)
 print result
 print rank(result, 0)
+"""

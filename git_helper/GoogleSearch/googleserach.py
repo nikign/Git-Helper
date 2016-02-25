@@ -1,103 +1,154 @@
-__author__ = 'linting'
+__author__ = 'linting Xue'
 from lxml import html
 import requests
 import json
 import urllib2
 from google import search
-from bs4 import BeautifulSoup
+from git_helper.stack_overflow_parser.QuestionParser import QuestionParser
+from git_helper.stack_overflow_parser.AnswerParser import AnswerParser
+from pprint import pprint
 
+import TFIDF_cal as SortUtils
 
 # -------------------------------------------------------
 # Google search return links
 # -------------------------------------------------------
 
-def search_engine(query):
-
+Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
+def google_search_engine(query):
+    """
+    Google search stackoverflow, return links
+    """
     Links = []
-    for url in search('site:stackoverflow.com %s' % query, tld='es', lang='es', stop=1):
+    QueryStackover = 'site:stackoverflow.com %s' % query
+    print QueryStackover
+    for url in search(QueryStackover, tld='es', lang='es', stop=1):
         Links.append(url)
     return Links
 
 
-Links = search_engine("git push conflict")
-#print Links[0]
+
+def scrape_webs_dumpfile(link):
+    """
+    Dump web content html file to WebContent.txt
+    """
+    page = requests.get(link)
+    f = open("WebContent.txt", 'w')
+    f.write(page.content)
+    f.close()
 
 
 
-def scrape_webs(WebLinks):
-    WebContent = []
-    for link in WebLinks:
-        page = requests.get(Links[0])
-        WebContent.append(page.content)
-        soup = BeautifulSoup(page.content)
-        f = open("websoup.txt", 'w')
-        f.write(soup.get_text())
-    return WebContent
+def scrape_web():
+    """
+    Extract question and answer from web
+    """
+    QuesParser = QuestionParser("WebContent.txt")
+    QuestionDic = QuesParser.make_question()
 
+    AnsParser = AnswerParser("WebContent.txt")
+    AnsList = AnsParser.make_answers_list()
 
-content = scrape_webs(Links)
-print content[0]
-
-"""
-print type(page.content)
-
-print "type of page.text: ", type(page.content)
-f = open("webcontent.txt", 'w')
-f.write(page.content)
-#json.loads(page.content)
-
-print "type of page.content: ", type(page.content)
-f = open("webtext.txt", 'w')
-f.write(page.content)
-
-tree = html.fromstring(page.content)
-print type(tree)
-print tree
-"""
-
-# get website in json format
-#page = requests.request(method="get", url="https://api.github.com/events")
-#a = page.json()
-#print "type of page.json", type(page.json)
-#f = open("webjson.txt", 'w')
-#f.write(page.json())
-
-"""
-from BeautifulSoup import BeautifulSoup
-import requests
-page = requests.get("https://www.google.dz/search?q=see")
-soup = BeautifulSoup(page.content)
-import re
-links = soup.findAll("a")
-for link in soup.find_all("a",href=re.compile("(?<=/url\?q=)(htt.*://.*)")):
-    print re.split(":(?=http)",link["href"].replace("/url?q=",""))
-
-
-"""
+    return [QuestionDic, AnsList]
 
 
 
-"""
+def scrape_webs(Links):
+    """
+    Extract question and answer for web list
+    :param Links:
+    :return: [Links_RemoveEmpty, QuesionContent, AnswerContent]
+    """
+    Links_RemoveEmpty= []
+    QuesionContent = []
+    AnswerContent = []
+    for link in Links[:8]:
 
-from googlesearch import GoogleSearch
-def search_wikipedia(query):
-    gs = GoogleSearch("site:stack.com %s" % query)
+        print link
+        scrape_webs_dumpfile(link)
+        [QuestionDic, AnswerList] = scrape_web()
+        QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
+
+        AnswerTemp = ''
+        for Answer in AnswerList:
+            #print Answer['votes']
+            #print type(Answer['votes'])
+            if Answer['votes']>0:
+                #print "vote larage than 0"
+                #print Answer['text']
+                AnswerTemp = AnswerTemp + Answer['text']
+
+        if AnswerTemp !='' and QuestionTemp != '':
+            Links_RemoveEmpty.append(link)
+            QuesionContent.append(QuestionTemp)
+            AnswerContent.append(AnswerTemp)
+        else:
+            print "Link %d answer  content is empty" % Links.index(link)
+
+    return [Links_RemoveEmpty, QuesionContent, AnswerContent]
+
+
+
+
+def main_search(Query):
+    """
+    Given a query, return our search result.
+
+    """
+
+    Links = google_search_engine(Query)
+    [Links_RemoveEmpty, QuestionContent, AnswerContent]=scrape_webs(Links)
+
+    #extract chars from string error
+    [Query_clean] = SortUtils.cleanStrings([Query])
+    QueryChars = SortUtils.target_words_extract(Query_clean)
+
+    QuestionContent = SortUtils.cleanStrings(QuestionContent)
+    AnswerContent = SortUtils.cleanStrings(AnswerContent)
+
+    QuestionAndAnswerContent = ['%s %s' % Content for Content in zip(QuestionContent,AnswerContent)]
+    QuestionAndAnswerContent = [SortUtils.remove_punctuation(Content) for Content in QuestionAndAnswerContent ]
+
 
     print "==================================================================="
-    print "                                   Top urls                        "
+    print "                              Links                                "
     print "==================================================================="
-    gs.results_per_page = 10
-    print "length of urls %d " % len(gs.top_urls())
-    print "top rul:", gs.top_urls()
+    #print len(Links_RemoveEmpty), Links_RemoveEmpty
 
     print "==================================================================="
-    print "                                 Top Results                       "
+    print "                          Question Content                         "
     print "==================================================================="
-    print "length of result %d " % len(gs.top_results())
-    print "top result:", gs.top_result()#['titleNoFormatting']
+    print len(QuestionContent), QuestionContent
+    print "==================================================================="
+    print "                           Answer Content                          "
+    print "==================================================================="
+    #print len(AnswerContent), AnswerContent
+    print "==================================================================="
+    print "                 Question&Answer Content                          "
+    print "==================================================================="
+    #print len(QuestionAndAnswerContent), QuestionAndAnswerContent
 
-    return gs.top_url()
-wiki_url = search_wikipedia(" git push conflict")
 
 
-"""
+    print "QueryChars is:", QueryChars
+
+
+    SimilairtyResult = SortUtils.cal_title_similarity([Query], QuestionContent, 0.1)
+    print "SimilairtyResult is: ", SimilairtyResult
+
+
+    TfidfValueMatrix = SortUtils.cal_tfidf(QueryChars, QuestionAndAnswerContent)
+
+    RankResult = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
+
+
+
+
+
+
+if __name__ == '__main__':
+    TopResult = main_search(Query)
+
+
+
+
