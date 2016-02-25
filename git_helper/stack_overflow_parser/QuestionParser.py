@@ -1,6 +1,12 @@
 from utils import get_html_text
 from bs4 import BeautifulSoup
 
+class ParseError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class QuestionParser():
 	# initialized with the html file of stack overflow page, 
 	# using as bellow you can get a question dict  
@@ -18,17 +24,21 @@ class QuestionParser():
 		return question_soup
 
 	def make_question(self):
-		with open(self.input_file, 'r') as input_file:
-			input_str = input_file.read()
-			question_text = self.get_question_text(input_str)
-			question_title = self.get_question_title(input_str)
-			question_votes = self.get_question_vote(input_str)
-			question = {
-				'text': question_text,
-				'title': question_title,
-				'votes': eval(question_votes)
-			}
-			return question
+		try:
+			with open(self.input_file, 'r') as input_file:
+				input_str = input_file.read()
+				question_text = self.get_question_text(input_str)
+				question_title = self.get_question_title(input_str)
+				question_votes = self.get_question_vote(input_str)
+				question = {
+					'text': question_text,
+					'title': question_title,
+					'votes': eval(question_votes)
+				}
+				return question
+		except Exception:
+			raise ParseError("Couldn't parse file %s" % self.input_file)
+
 
 	def get_question_text(self, input_str):
 		question_soup = self.get_question_soup(input_str)
