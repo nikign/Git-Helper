@@ -7,3 +7,4 @@ git_helper/git-web/git-helper-2016/GoogleSearch
 git_helper/git-web/git-helper-2016/rate_results.py
 git_helper/git-web/git-helper-2016/site/css/bootstrap
 git_helper/git-web/git-helper-2016/*.pyc
+*.pyc
