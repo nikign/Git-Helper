@@ -82,8 +82,8 @@ def runCommonCommands(cmd):
         msg = processErrorMessage(e.output)
         #provideSolution()
         print(msg)
-    except WindowsError as e:
-        print(e.strerror)
+    except Exception as e:
+        print(e)
     return
     
 # run special commands
@@ -101,7 +101,7 @@ def runCdCommand(cmd):
             os.chdir(cmdBody)
         except os.error as e:
             print (e.strerror)
-        except WindowsError as e:
+        except Exception as e:
             print (e)
     return
 
