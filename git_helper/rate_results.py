@@ -10,8 +10,8 @@ def get_web_results(search_phrase):
     return result
 
 def get_email_result(error_message):
-    res = "Text from first result in ranking for %s" % error_message
+    res = main_search_email(error_message)
     return res
 
 
-#get_web_results(Query)
+#get_email_result(Query)

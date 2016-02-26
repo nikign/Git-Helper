@@ -38,14 +38,14 @@ def scrape_webs_dumpfile(link, dumpfile):
 
 
 
-def scrape_web():
+def scrape_web(filename):
     """
     Extract question and answer from web
     """
     try:
-        QuesParser = QuestionParser("WebContent.txt")
+        QuesParser = QuestionParser(filename)
         QuestionDic = QuesParser.make_question()
-        AnsParser = AnswerParser("WebContent.txt")
+        AnsParser = AnswerParser(filename)
         AnsList = AnsParser.make_answers_list()
     except Exception:
         QuestionDic = {}
@@ -68,7 +68,7 @@ def scrape_webs(Links):
 
         #print link
         scrape_webs_dumpfile(link, "WebContent.txt")
-        [QuestionDic, AnswerList] = scrape_web()
+        [QuestionDic, AnswerList] = scrape_web("WebContent.txt")
         if not (QuestionDic and AnswerList): continue
         QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
         AnswerTemp = ''
@@ -173,11 +173,12 @@ def main_search(Query):
     return Links_RemoveEmpty
 
 def main_search_web(Query):
+
     ResultLinks = main_search(Query)
     WebResult = []
     for link in ResultLinks:
         scrape_webs_dumpfile(link, "WebContent.txt")
-        [QuestionDic, AnsList] = scrape_web()
+        [QuestionDic, AnsList] = scrape_web("WebContent.txt")
         title = QuestionDic['title']
         abstract = QuestionDic['text']
         obj = {'title': title, 'link': link, 'abstract': abstract}
@@ -187,14 +188,12 @@ def main_search_web(Query):
     return WebResult
 
 def main_search_email(Query):
-    ResultLinks = main_search(Query)
-    #print ResultLinks
-    scrape_webs_dumpfile(ResultLinks[0], "WebContentEmail.txt")
-    [QuestionDic, AnsList] = scrape_web()
-    #print AnsList[0]
-    EmailResult = AnsList[1]['text']
 
-    #print EmailResult
+    ResultLinks = main_search(Query)
+    scrape_webs_dumpfile(ResultLinks[0], "WebContentEmail.txt")
+    [QuestionDic, AnsList] = scrape_web("WebContentEmail.txt")
+    EmailResult = AnsList[0]['html_text']
+
     return EmailResult
 
 
