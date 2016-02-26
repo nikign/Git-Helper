@@ -19,6 +19,9 @@ import os
 import webapp2
 import jinja2
 
+import sys
+sys.path.insert(0, 'libs')
+
 from rate_results import get_web_results
 
 template_dir = os.path.join(os.path.dirname(__file__), 'site')
