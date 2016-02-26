@@ -2,17 +2,17 @@ __author__ = 'linting Xue'
 import requests
 from google import search
 from stack_overflow_parser.QuestionParser import QuestionParser
-from stack_overflow_parser.AnswerParser import AnswerParser, ParseError
+from stack_overflow_parser.AnswerParser import AnswerParser
 import copy
 
 import TFIDF_cal as SortUtils
-
+import tfidf
 # -------------------------------------------------------
 # Google search return links
 # -------------------------------------------------------
 
-Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
-Query = "error: src refspec master does not match any. "
+#Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
+#Query = "error: src refspec master does not match any. "
 def google_search_engine(query):
     """
     Google search stackoverflow, return links
@@ -72,6 +72,7 @@ def scrape_webs(Links):
         [QuestionDic, AnswerList] = scrape_web("WebContent.txt")
         if not (QuestionDic and AnswerList): continue
         QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
+        #QuestionVote = QuestionDic["vote"]
         AnswerTemp = ''
 
         for Answer in AnswerList:
@@ -107,13 +108,35 @@ def main_search(Query):
     #extract chars from string error
     [Query_clean] = SortUtils.cleanStrings([Query])
     QueryChars = SortUtils.target_words_extract(Query_clean)
+
+
     #print "QueryChars is:", QueryChars
     QuestionContentOrigin = copy.deepcopy(QuestionContent)
     QuestionContent = SortUtils.cleanStrings(QuestionContent)
     AnswerContent = SortUtils.cleanStrings(AnswerContent)
 
     QuestionAndAnswerContent = ['%s %s' % Content for Content in zip(QuestionContent,AnswerContent)]
-    QuestionAndAnswerContent = [SortUtils.remove_punctuation(Content) for Content in QuestionAndAnswerContent ]
+    #QuestionAndAnswerContent = [SortUtils.remove_punctuation(Content) for Content in QuestionAndAnswerContent ]
+
+
+    Tfidf_table = tfidf.tfidf()
+    index = 0
+    for content in QuestionAndAnswerContent:
+        index = index +1
+        content_remove_punc = SortUtils.remove_punctuation(content)
+        content_words_list = SortUtils.target_words_extract(content_remove_punc)
+        content_words_list = [word.encode('ascii', 'ignore') for word in content_words_list]
+        Tfidf_table.addDocument(str(index), content_words_list)
+
+    SimilaritiesResult = Tfidf_table.similarities(QueryChars)
+    SimilaritiesResult = [Result[1] for Result in SimilaritiesResult]
+    Newindex = sorted(range(len(SimilaritiesResult)), key=lambda k: SimilaritiesResult[k], reverse=True)
+    print Newindex
+
+    [Links_RemoveEmpty] = SortUtils.filter_result([Links_RemoveEmpty],Newindex)
+    return Links_RemoveEmpty[:10]
+
+
 
     #
     # print "==================================================================="
@@ -136,12 +159,12 @@ def main_search(Query):
 
 
     # Use similarity to filter result
-    SimilairtyResult_index = SortUtils.cal_title_similarity([Query], QuestionContent, 0.2)
+    #SimilairtyResult_index = SortUtils.cal_title_similarity([Query], QuestionContent, 0.2)
     #print "SimilairtyResult is: ", SimilairtyResult_index
 
-    [Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
-        SortUtils.filter_result([Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, \
-                                 QuestionAndAnswerContent],SimilairtyResult_index)
+    #[Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
+     #   SortUtils.filter_result([Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, \
+      #                           QuestionAndAnswerContent],SimilairtyResult_index)
 
     # print "==================================================================="
     # print "                              Links                                "
@@ -164,14 +187,14 @@ def main_search(Query):
 
 
 
-    TfidfValueMatrix = SortUtils.cal_tfidf(QueryChars, QuestionAndAnswerContent)
-
-    RankResult_index = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
-
-    [Links_RemoveEmpty] = \
-        SortUtils.filter_result([Links_RemoveEmpty],RankResult_index)
-    print Links_RemoveEmpty
-    return Links_RemoveEmpty
+    # TfidfValueMatrix = SortUtils.cal_tfidf(QueryChars, QuestionAndAnswerContent)
+    #
+    # RankResult_index = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
+    #
+    # [Links_RemoveEmpty] = \
+    #     SortUtils.filter_result([Links_RemoveEmpty],RankResult_index)
+    # print Links_RemoveEmpty
+    # return Links_RemoveEmpty
 
 def main_search_web(Query):
 
@@ -185,7 +208,7 @@ def main_search_web(Query):
         obj = {'title': title, 'link': link, 'abstract': abstract}
         WebResult.append(obj)
 
-    #print WebResult[1]
+    print WebResult[1]
     return WebResult
 
 def main_search_email(Query):
