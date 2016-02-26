@@ -57,8 +57,7 @@ def getCommandName(cmd):
 
 # welcome words
 def greeting():
-    print(Fore.RED + Back.GREEN + 'Welcome to git helper!')
-    print(Style.RESET_ALL)
+    print(Fore.RED + Back.GREEN + 'Welcome to git helper!' + Style.RESET_ALL)
 
 # check if is special command that can't run by subprocess.check_output()
 def isSpecialCommand(cmd):
@@ -71,7 +70,6 @@ def isSpecialCommand(cmd):
 # Color the error messages
 def processErrorMessage(msg):
     for key, value in constant.errorKeywordColor.iteritems():
-        print('Key ' + key + ' value ' + value)
         msg = msg.replace(key,value)
     return msg
 
