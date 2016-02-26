@@ -12,6 +12,7 @@ import TFIDF_cal as SortUtils
 # -------------------------------------------------------
 
 Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
+Query = "error: src refspec master does not match any. "
 def google_search_engine(query):
     """
     Google search stackoverflow, return links
@@ -169,7 +170,7 @@ def main_search(Query):
 
     [Links_RemoveEmpty] = \
         SortUtils.filter_result([Links_RemoveEmpty],RankResult_index)
-
+    print Links_RemoveEmpty
     return Links_RemoveEmpty
 
 def main_search_web(Query):

@@ -1,9 +1,8 @@
 __author__ = 'linting'
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-from nltk.corpus import stopwords
+#from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 import re
+from stop_words import get_stop_words
 import numpy as np
 import numpy.linalg as LA
 import pandas as pd
@@ -19,7 +18,7 @@ def target_words_extract(ErrorMessageFromUser):
     """
 
     replaceList = ["(", ")", ".", ":", ]
-    pattern = re.compile(r'\b(' + r'|'.join(stopwords.words('english')) + r')\b\s*')
+    pattern = re.compile(r'\b(' + r'|'.join(get_stop_words('english')) + r')\b\s*')
     ErrorMessage = pattern.sub('', ErrorMessageFromUser)
 
     ErrorChars = ErrorMessage.split(' ')
