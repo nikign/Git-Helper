@@ -10,8 +10,13 @@ init()
 
 # main entry
 def main():
+
+
+    os.chdir('E:\\Courses\\CSC 510\\Conflict')
+
+
     greeting()
-    
+
     cmd = ''
     result = ''
 
@@ -63,13 +68,22 @@ def isSpecialCommand(cmd):
     else:
         return False
 
+# Color the error messages
+def processErrorMessage(msg):
+    for key, value in constant.errorKeywordColor.iteritems():
+        print('Key ' + key + ' value ' + value)
+        msg = msg.replace(key,value)
+    return msg
+
 # run common commands
 def runCommonCommands(cmd):
     try:
         result = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         print(result)
     except subprocess.CalledProcessError as e:
-        print(e.output)
+        msg = processErrorMessage(e.output)
+        #provideSolution()
+        print(msg)
     except WindowsError as e:
         print(e.strerror)
     return
