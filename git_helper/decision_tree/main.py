@@ -23,11 +23,13 @@ def main():
     while cmd != 'q' and cmd != 'quit':
         runCommand(cmd)
         cmd = getCommand()
+
         
     print('See you next time!')
     
     return
     
+
 ###########################################
 # FUNCTIONS
 ###########################################
@@ -87,7 +89,11 @@ def runCommonCommands(cmd):
     except WindowsError as e:
         print(e.strerror)
     return
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 69eafdd74bfa3e01e6e2a58057d631bc316ef14f
 # run special commands
 def runSpecialCommand(cmd):
     specialCommands[getCommandName(cmd)](cmd)
@@ -118,4 +124,7 @@ specialCommands = {
 
 
 main()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 69eafdd74bfa3e01e6e2a58057d631bc316ef14f
