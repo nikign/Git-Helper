@@ -2,7 +2,7 @@
 #After install, need to copy all the packages into libs folder
 import subprocess
 
-bashCommand = "sudo pip install -r lib_requirements.txt"
+bashCommand = "sudo pip install -t lib -r lib_requirements.txt"
 process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
 output = process.communicate()[0]
 print output
