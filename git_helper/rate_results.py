@@ -1,20 +1,17 @@
-from git_helper.GoogleSearch.googleserach import main_search
+from git_helper.GoogleSearch.googleserach import main_search_web
+from git_helper.GoogleSearch.googleserach import main_search_email
 
+#Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
 
-def make_mock_results():
-	l = []
-	for i in xrange(0, 20):
-		title = 'title %d' % i
-		link = 'http://google.com'
-		abstract = 'some description on title %d :D\n just tried to make them longer\n and in multiple lines' % i
-		obj = {'title': title, 'link': link, 'abstract': abstract}
-		l.append(obj)
-	return l
 
 def get_web_results(search_phrase):
-	res = make_mock_results()
-	return res
+    result = main_search_web(search_phrase)
+    #print result
+    return result
 
 def get_email_result(error_message):
-	res = "Text from first result in ranking for %s" % error_message
-	return res
+    res = "Text from first result in ranking for %s" % error_message
+    return res
+
+
+#get_web_results(Query)

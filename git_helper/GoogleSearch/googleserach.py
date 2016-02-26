@@ -1,8 +1,9 @@
 __author__ = 'linting Xue'
 import requests
 from google import search
-from git_helper.stack_overflow_parser.QuestionParser import QuestionParser
-from git_helper.stack_overflow_parser.AnswerParser import AnswerParser, ParseError
+from stack_overflow_parser.QuestionParser import QuestionParser
+from stack_overflow_parser.AnswerParser import AnswerParser, ParseError
+import copy
 
 import TFIDF_cal as SortUtils
 
@@ -17,8 +18,8 @@ def google_search_engine(query):
     """
     Links = []
     QueryStackover = 'site:stackoverflow.com %s' % query
-    print QueryStackover
-    for url in search(QueryStackover, tld='es', lang='es', stop=10):
+    #print QueryStackover
+    for url in search(QueryStackover, tld='es', lang='es', stop=30):
         Links.append(url)
     return Links
 
@@ -26,12 +27,12 @@ def google_search_engine(query):
 # -------------------------------------------------------
 # Google search return links
 # -------------------------------------------------------
-def scrape_webs_dumpfile(link):
+def scrape_webs_dumpfile(link, dumpfile):
     """
     Dump web content html file to WebContent.txt
     """
     page = requests.get(link)
-    f = open("WebContent.txt", 'w')
+    f = open(dumpfile, 'w')
     f.write(page.content)
     f.close()
 
@@ -63,15 +64,13 @@ def scrape_webs(Links):
     Links_RemoveEmpty= []
     QuesionContent = []
     AnswerContent = []
-    WebTitle = []
     for link in Links:
 
-        print link
-        scrape_webs_dumpfile(link)
+        #print link
+        scrape_webs_dumpfile(link, "WebContent.txt")
         [QuestionDic, AnswerList] = scrape_web()
         if not (QuestionDic and AnswerList): continue
         QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
-        WebTitle.append(QuestionDic["title"])
         AnswerTemp = ''
 
         for Answer in AnswerList:
@@ -87,9 +86,10 @@ def scrape_webs(Links):
             QuesionContent.append(QuestionTemp)
             AnswerContent.append(AnswerTemp)
         else:
-            print "Link %d answer  content is empty" % Links.index(link)
+            #print "Link %d answer  content is empty" % Links.index(link)
+            pass
 
-    return [Links_RemoveEmpty, WebTitle, QuesionContent, AnswerContent]
+    return [Links_RemoveEmpty, QuesionContent, AnswerContent]
 
 
 
@@ -101,63 +101,64 @@ def main_search(Query):
     """
 
     Links = google_search_engine(Query)
-    [Links_RemoveEmpty, WebTitle, QuestionContent, AnswerContent]=scrape_webs(Links)
+    [Links_RemoveEmpty, QuestionContent, AnswerContent]=scrape_webs(Links)
 
     #extract chars from string error
     [Query_clean] = SortUtils.cleanStrings([Query])
     QueryChars = SortUtils.target_words_extract(Query_clean)
-    print "QueryChars is:", QueryChars
-
+    #print "QueryChars is:", QueryChars
+    QuestionContentOrigin = copy.deepcopy(QuestionContent)
     QuestionContent = SortUtils.cleanStrings(QuestionContent)
     AnswerContent = SortUtils.cleanStrings(AnswerContent)
 
     QuestionAndAnswerContent = ['%s %s' % Content for Content in zip(QuestionContent,AnswerContent)]
     QuestionAndAnswerContent = [SortUtils.remove_punctuation(Content) for Content in QuestionAndAnswerContent ]
 
-
-    print "==================================================================="
-    print "                              Links                                "
-    print "==================================================================="
-    #print len(Links_RemoveEmpty), Links_RemoveEmpty
-
-    print "==================================================================="
-    print "                          Question Content                         "
-    print "==================================================================="
-    print len(QuestionContent), QuestionContent
-    print "==================================================================="
-    print "                           Answer Content                          "
-    print "==================================================================="
-    #print len(AnswerContent), AnswerContent
-    print "==================================================================="
-    print "                 Question&Answer Content                          "
-    print "==================================================================="
-    #print len(QuestionAndAnswerContent), QuestionAndAnswerContent
+    #
+    # print "==================================================================="
+    # print "                              Links                                "
+    # print "==================================================================="
+    # #print len(Links_RemoveEmpty), Links_RemoveEmpty
+    #
+    # print "==================================================================="
+    # print "                          Question Content                         "
+    # print "==================================================================="
+    # print len(QuestionContent), QuestionContent
+    # print "==================================================================="
+    # print "                           Answer Content                          "
+    # print "==================================================================="
+    # #print len(AnswerContent), AnswerContent
+    # print "==================================================================="
+    # print "                 Question&Answer Content                          "
+    # print "==================================================================="
+    # #print len(QuestionAndAnswerContent), QuestionAndAnswerContent
 
 
     # Use similarity to filter result
     SimilairtyResult_index = SortUtils.cal_title_similarity([Query], QuestionContent, 0.2)
-    print "SimilairtyResult is: ", SimilairtyResult_index
+    #print "SimilairtyResult is: ", SimilairtyResult_index
 
-    [Links_RemoveEmpty, WebTitle, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
-        SortUtils.filter_result([Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent],SimilairtyResult_index)
+    [Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
+        SortUtils.filter_result([Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, \
+                                 QuestionAndAnswerContent],SimilairtyResult_index)
 
-    print "==================================================================="
-    print "                              Links                                "
-    print "==================================================================="
-    print len(Links_RemoveEmpty), Links_RemoveEmpty
-
-    print "==================================================================="
-    print "                          Question Content                         "
-    print "==================================================================="
-    print len(QuestionContent), QuestionContent
-    print "==================================================================="
-    print "                           Answer Content                          "
-    print "==================================================================="
-    print len(AnswerContent), AnswerContent
-    print "==================================================================="
-    print "                 Question&Answer Content                          "
-    print "==================================================================="
-    print len(QuestionAndAnswerContent), QuestionAndAnswerContent
+    # print "==================================================================="
+    # print "                              Links                                "
+    # print "==================================================================="
+    # print len(Links_RemoveEmpty), Links_RemoveEmpty
+    #
+    # print "==================================================================="
+    # print "                          Question Content                         "
+    # print "==================================================================="
+    # print len(QuestionContent), QuestionContent
+    # print "==================================================================="
+    # print "                           Answer Content                          "
+    # print "==================================================================="
+    # print len(AnswerContent), AnswerContent
+    # print "==================================================================="
+    # print "                 Question&Answer Content                          "
+    # print "==================================================================="
+    # print len(QuestionAndAnswerContent), QuestionAndAnswerContent
 
 
 
@@ -166,13 +167,39 @@ def main_search(Query):
 
     RankResult_index = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
 
-    [Links_RemoveEmpty, WebTitle, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
-        SortUtils.filter_result([Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent],RankResult_index)
+    [Links_RemoveEmpty] = \
+        SortUtils.filter_result([Links_RemoveEmpty],RankResult_index)
+
+    return Links_RemoveEmpty
+
+def main_search_web(Query):
+    ResultLinks = main_search(Query)
+    WebResult = []
+    for link in ResultLinks:
+        scrape_webs_dumpfile(link, "WebContent.txt")
+        [QuestionDic, AnsList] = scrape_web()
+        title = QuestionDic['title']
+        abstract = QuestionDic['text']
+        obj = {'title': title, 'link': link, 'abstract': abstract}
+        WebResult.append(obj)
+
+    #print WebResult[1]
+    return WebResult
+
+def main_search_email(Query):
+    ResultLinks = main_search(Query)
+    #print ResultLinks
+    scrape_webs_dumpfile(ResultLinks[0], "WebContentEmail.txt")
+    [QuestionDic, AnsList] = scrape_web()
+    #print AnsList[0]
+    EmailResult = AnsList[1]['text']
+
+    #print EmailResult
+    return EmailResult
 
 
-
-
-
+#main_search_web(Query)
+#main_search_email(Query)
 
 #if __name__ == '__main__':
 #    TopResult = main_search(Query)
