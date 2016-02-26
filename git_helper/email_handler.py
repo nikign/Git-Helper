@@ -97,7 +97,8 @@ class EmailHandler:
                         msg_response = get_email_result(msg_text)
                         msg_id, sender, subj = get_message_info(msg)
                         self.send_mail(msg_id, sender, subj, msg_response)
-                    except Exception: # email can't be parsed or sent, still mark it as answered
+                    except Exception as e: # email can't be parsed or sent, still mark it as answered
+                        print e
                         print "error replying msg: %s" % msg_id
                 self.emails_answered = numMessages
                 if should_record:
