@@ -12,7 +12,7 @@ init()
 def main():
 
 
-    os.chdir('E:\\Courses\\CSC 510\\Conflict')
+    #os.chdir('E:\\Courses\\CSC 510\\Conflict')
 
 
     greeting()
