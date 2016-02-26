@@ -91,12 +91,19 @@ class EmailHandler:
                 should_record = self.emails_answered < numMessages
                 for i in range(self.emails_answered, numMessages):
                     try:
+                        print "1"
                         msg = self.pop_conn.retr(i+1)[1] # new statement
+                        print "2"
                         msg_text = get_message_text(msg)
+                        print "3"
                         msg_text = covert_html_to_text(msg_text)
+                        print "4"
                         msg_response = get_email_result(msg_text)
+                        print "5"
                         msg_id, sender, subj = get_message_info(msg)
+                        print "6"
                         self.send_mail(msg_id, sender, subj, msg_response)
+                        print "7"
                     except Exception as e: # email can't be parsed or sent, still mark it as answered
                         print e
                         print "error replying msg:" #% msg_id
