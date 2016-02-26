@@ -1,3 +1,4 @@
+
 from utils import get_html_text
 from bs4 import BeautifulSoup
 
@@ -25,8 +26,8 @@ class QuestionParser():
 
 	def make_question(self):
 		try:
-			with open(self.input_file, 'r') as input_file:
-				input_str = input_file.read()
+			#with open(self.input_file, 'r') as input_file:
+				input_str = self.input_file
 				question_text, question_html = self.get_question_text(input_str)
 				question_title = self.get_question_title(input_str)
 				question_votes = self.get_question_vote(input_str)

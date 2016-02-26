@@ -12,7 +12,12 @@ import tfidf
 # -------------------------------------------------------
 
 #Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
-#Query = "error: src refspec master does not match any. "
+Query = "error: src refspec master does not match any. "
+
+log_flag = False
+def log(content):
+    if log_flag: print content
+
 def google_search_engine(query):
     """
     Google search stackoverflow, return links
@@ -28,15 +33,13 @@ def google_search_engine(query):
 # -------------------------------------------------------
 # Google search return links
 # -------------------------------------------------------
-def scrape_webs_dumpfile(link, dumpfile):
+def scrape_webs_dumpfile(link):
     """
-    Dump web content html file to WebContent.txt
+
     """
     page = requests.get(link)
-    f = open(dumpfile, 'w')
-    f.write(page.content)
-    f.close()
 
+    return page.content
 
 
 def scrape_web(filename):
@@ -65,14 +68,14 @@ def scrape_webs(Links):
     Links_RemoveEmpty= []
     QuesionContent = []
     AnswerContent = []
+    QuestionVotes = []
     for link in Links:
+        PageContent=scrape_webs_dumpfile(link)
+        [QuestionDic, AnswerList] = scrape_web(PageContent)
 
-        #print link
-        scrape_webs_dumpfile(link, "WebContent.txt")
-        [QuestionDic, AnswerList] = scrape_web("WebContent.txt")
         if not (QuestionDic and AnswerList): continue
         QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
-        #QuestionVote = QuestionDic["vote"]
+        QuestionVotes.append(QuestionDic["votes"])
         AnswerTemp = ''
 
         for Answer in AnswerList:
@@ -91,7 +94,7 @@ def scrape_webs(Links):
             #print "Link %d answer  content is empty" % Links.index(link)
             pass
 
-    return [Links_RemoveEmpty, QuesionContent, AnswerContent]
+    return [Links_RemoveEmpty, QuestionVotes, QuesionContent, AnswerContent]
 
 
 
@@ -103,7 +106,7 @@ def main_search(Query):
     """
 
     Links = google_search_engine(Query)
-    [Links_RemoveEmpty, QuestionContent, AnswerContent]=scrape_webs(Links)
+    [Links_RemoveEmpty,QuestionVotes, QuestionContent, AnswerContent]=scrape_webs(Links)
 
     #extract chars from string error
     [Query_clean] = SortUtils.cleanStrings([Query])
@@ -116,9 +119,8 @@ def main_search(Query):
     AnswerContent = SortUtils.cleanStrings(AnswerContent)
 
     QuestionAndAnswerContent = ['%s %s' % Content for Content in zip(QuestionContent,AnswerContent)]
-    #QuestionAndAnswerContent = [SortUtils.remove_punctuation(Content) for Content in QuestionAndAnswerContent ]
 
-
+    #cal tfidf
     Tfidf_table = tfidf.tfidf()
     index = 0
     for content in QuestionAndAnswerContent:
@@ -131,9 +133,31 @@ def main_search(Query):
     SimilaritiesResult = Tfidf_table.similarities(QueryChars)
     SimilaritiesResult = [Result[1] for Result in SimilaritiesResult]
     Newindex = sorted(range(len(SimilaritiesResult)), key=lambda k: SimilaritiesResult[k], reverse=True)
-    print Newindex
+
+
+    SimilaritiesResult = SortUtils.normalize(SimilaritiesResult)
+    log("before QuestionVotes")
+    log(QuestionVotes)
+    QuestionVotes = SortUtils.log(QuestionVotes)
+
+    log("log votes")
+    log(QuestionVotes)
+    QuestionVotes = SortUtils.normalize(QuestionVotes)
+    log("after QuestionVotes")
+    log(QuestionVotes)
+
+
+    FitValue = [sim*0.6+que*0.4 for sim, que in zip(SimilaritiesResult, QuestionVotes)]
+    log("Fit value")
+    log(FitValue)
+
+    Newindex = sorted(range(len(FitValue)), key=lambda k: FitValue[k], reverse=True)
+    log("sort by Fitvalue")
+    log(Newindex)
 
     [Links_RemoveEmpty] = SortUtils.filter_result([Links_RemoveEmpty],Newindex)
+
+
     return Links_RemoveEmpty[:10]
 
 
@@ -201,21 +225,22 @@ def main_search_web(Query):
     ResultLinks = main_search(Query)
     WebResult = []
     for link in ResultLinks:
-        scrape_webs_dumpfile(link, "WebContent.txt")
-        [QuestionDic, AnsList] = scrape_web("WebContent.txt")
+        log(link)
+        PageContent =  scrape_webs_dumpfile(link)
+        [QuestionDic, AnsList] = scrape_web(PageContent)
         title = QuestionDic['title']
         abstract = QuestionDic['text']
         obj = {'title': title, 'link': link, 'abstract': abstract}
         WebResult.append(obj)
 
-    print WebResult[1]
+    #print WebResult[1]
     return WebResult
 
 def main_search_email(Query):
 
     ResultLinks = main_search(Query)
-    scrape_webs_dumpfile(ResultLinks[0], "WebContentEmail.txt")
-    [QuestionDic, AnsList] = scrape_web("WebContentEmail.txt")
+    PageContent = scrape_webs_dumpfile(ResultLinks[0])
+    [QuestionDic, AnsList] = scrape_web(PageContent)
     EmailResult = AnsList[0]['html_text']
 
     return EmailResult

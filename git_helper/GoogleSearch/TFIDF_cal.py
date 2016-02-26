@@ -8,6 +8,7 @@ from stop_words import get_stop_words
 # import pandas as pd
 # from sklearn.metrics.pairwise import linear_kernel
 import string
+import math
 
 
 def target_words_extract(ErrorMessageFromUser):
@@ -21,7 +22,6 @@ def target_words_extract(ErrorMessageFromUser):
 
     pattern = re.compile(r'\b(' + r'|'.join(get_stop_words('english')) + r')\b\s*')
     ErrorMessage = pattern.sub('', ErrorMessageFromUser)
-    print ErrorMessage
     ErrorMessage = ErrorMessage.replace('\n', ' ')
     ErrorMessage = ErrorMessage.replace('\r', ' ')
 
@@ -53,6 +53,20 @@ def filter_result(Input, indexs):
         NewItem = [item[index] for index in indexs]
         Output.append(NewItem)
     return Output
+
+def normalize(InputArray):
+    OutputArray = [(number-min(InputArray))/(max(InputArray)-min(InputArray)) for number in InputArray]
+    return OutputArray
+
+def log(InputArray):
+    OutputArray = []
+    for num in InputArray:
+        try:
+            num = math.log10(num)
+        except Exception:
+            num = 0
+        OutputArray.append(num)
+    return OutputArray
 
 
 
