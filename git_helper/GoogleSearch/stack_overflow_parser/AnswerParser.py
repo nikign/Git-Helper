@@ -37,7 +37,7 @@ class AnswerParser:
 					ans = get_html_text(ans_div)
 					answer = {
 						"text": ans,
-                        "html_text": ans_div,
+                                                "html_text": ans_div,
 						"votes": eval(votes),
 						"accepted": accepted
 					}

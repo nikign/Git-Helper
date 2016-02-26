@@ -32,8 +32,8 @@ class QuestionParser():
 				question_votes = self.get_question_vote(input_str)
 				question = {
 					'text': question_text,
-                    'html_text': question_html,
-                    'title': question_title,
+                                        'html_text': question_html,
+                                        'title': question_title,
 					'votes': eval(question_votes)
 				}
 				return question
