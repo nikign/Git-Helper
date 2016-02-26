@@ -1,7 +1,7 @@
 #libraries needed for running googlesearch
 requests
 sklearn
-stopwords
+stop-words
 pandas
 google 1.06
 #libraries needed for running parser script
