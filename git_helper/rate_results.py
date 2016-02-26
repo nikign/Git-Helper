@@ -1,7 +1,7 @@
 from GoogleSearch.googleserach import main_search_web
 from GoogleSearch.googleserach import main_search_email
 
-Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
+# Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
 
 
 def get_web_results(search_phrase):
@@ -14,4 +14,4 @@ def get_email_result(error_message):
     return res
 
 
-print get_email_result(Query)
+# print get_email_result(Query)
