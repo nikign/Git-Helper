@@ -1,0 +1,9 @@
+#libraries needed for running googlesearch
+requests
+sklearn
+stopwords
+pandas
+google 1.06
+#libraries needed for running parser script
+BeautifulSoup4
+utils
