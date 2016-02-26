@@ -2,7 +2,7 @@ __author__ = 'linting Xue'
 import requests
 from google import search
 from git_helper.stack_overflow_parser.QuestionParser import QuestionParser
-from git_helper.stack_overflow_parser.AnswerParser import AnswerParser
+from git_helper.stack_overflow_parser.AnswerParser import AnswerParser, ParseError
 
 import TFIDF_cal as SortUtils
 
@@ -18,7 +18,7 @@ def google_search_engine(query):
     Links = []
     QueryStackover = 'site:stackoverflow.com %s' % query
     print QueryStackover
-    for url in search(QueryStackover, tld='es', lang='es', stop=1):
+    for url in search(QueryStackover, tld='es', lang='es', stop=10):
         Links.append(url)
     return Links
 
@@ -41,11 +41,14 @@ def scrape_web():
     """
     Extract question and answer from web
     """
-    QuesParser = QuestionParser("WebContent.txt")
-    QuestionDic = QuesParser.make_question()
-
-    AnsParser = AnswerParser("WebContent.txt")
-    AnsList = AnsParser.make_answers_list()
+    try:
+        QuesParser = QuestionParser("WebContent.txt")
+        QuestionDic = QuesParser.make_question()
+        AnsParser = AnswerParser("WebContent.txt")
+        AnsList = AnsParser.make_answers_list()
+    except Exception:
+        QuestionDic = {}
+        AnsList = []
 
     return [QuestionDic, AnsList]
 
@@ -60,14 +63,17 @@ def scrape_webs(Links):
     Links_RemoveEmpty= []
     QuesionContent = []
     AnswerContent = []
-    for link in Links[:8]:
+    WebTitle = []
+    for link in Links:
 
         print link
         scrape_webs_dumpfile(link)
         [QuestionDic, AnswerList] = scrape_web()
+        if not (QuestionDic and AnswerList): continue
         QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
-
+        WebTitle.append(QuestionDic["title"])
         AnswerTemp = ''
+
         for Answer in AnswerList:
             #print Answer['votes']
             #print type(Answer['votes'])
@@ -83,7 +89,7 @@ def scrape_webs(Links):
         else:
             print "Link %d answer  content is empty" % Links.index(link)
 
-    return [Links_RemoveEmpty, QuesionContent, AnswerContent]
+    return [Links_RemoveEmpty, WebTitle, QuesionContent, AnswerContent]
 
 
 
@@ -95,7 +101,7 @@ def main_search(Query):
     """
 
     Links = google_search_engine(Query)
-    [Links_RemoveEmpty, QuestionContent, AnswerContent]=scrape_webs(Links)
+    [Links_RemoveEmpty, WebTitle, QuestionContent, AnswerContent]=scrape_webs(Links)
 
     #extract chars from string error
     [Query_clean] = SortUtils.cleanStrings([Query])
@@ -132,7 +138,7 @@ def main_search(Query):
     SimilairtyResult_index = SortUtils.cal_title_similarity([Query], QuestionContent, 0.2)
     print "SimilairtyResult is: ", SimilairtyResult_index
 
-    [Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
+    [Links_RemoveEmpty, WebTitle, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
         SortUtils.filter_result([Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent],SimilairtyResult_index)
 
     print "==================================================================="
@@ -158,7 +164,10 @@ def main_search(Query):
 
     TfidfValueMatrix = SortUtils.cal_tfidf(QueryChars, QuestionAndAnswerContent)
 
-    RankResult = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
+    RankResult_index = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
+
+    [Links_RemoveEmpty, WebTitle, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
+        SortUtils.filter_result([Links_RemoveEmpty, QuestionContent, AnswerContent, QuestionAndAnswerContent],RankResult_index)
 
 
 
