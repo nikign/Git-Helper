@@ -11,7 +11,7 @@ init()
 # main entry
 def main():
 
-    #os.chdir('E:\\Courses\\CSC 510\\Conflict')
+    os.chdir('E:\\Courses\\CSC 510\\Conflict')
 
 
     greeting()
@@ -22,7 +22,6 @@ def main():
     while cmd != 'q' and cmd != 'quit':
         runCommand(cmd)
         cmd = getCommand().lstrip().rstrip()
-        print cmd
         
     print('See you next time!')
     
@@ -68,7 +67,13 @@ def getGitCommandName(cmd):
 
 # welcome words
 def greeting():
-    print(Fore.RED + Back.GREEN + 'Welcome to git helper!' + Style.RESET_ALL)
+    print
+    print(Fore.GREEN + '**************************')
+    print('* Welcome to git helper! *')
+    print('**************************' + Style.RESET_ALL)
+    print('Please input your commands like you do in bash.')
+    print
+    return
 
 # check if a command is git command
 def isGitCommand(cmd):
@@ -93,13 +98,14 @@ def providePushSolution(msg):
     #raise NotImplementedError('solution for push command has not been implemented yet')
     if msg.find('[rejected]') > 0 and msg.find('failed to push some refs to') > 0 and (msg.find('(fetch first)') > 0 or msg.find('(non-fast-forward)')):
         print('The remote server has some work that you do not have on your local machine')
-        print("Please do a '" + Back.CYAN + "git pull" + Style.RESET_ALL + "' command to get the work you do not have locally.")
+        print("Please do a '" + Style.DIM + "git pull" + Style.RESET_ALL + "' command to get the work you do not have locally.")
+    
     print('\n')
     return
 
 # Provide solution with decision tree ########################################################################################
 def provideSolution(cmd, msg):
-    print(Fore.GREEN + Back.YELLOW + '****************************')
+    print(Fore.GREEN + '****************************')
     print("* Here is the SOLUTION!!!! *")
     print('****************************' + Style.RESET_ALL)
     gitcmd = getGitCommandName(cmd)
