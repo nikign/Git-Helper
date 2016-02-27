@@ -216,7 +216,7 @@ def main_search_email(Query):
     ResultLinks = main_search(Query)
     scrape_webs_dumpfile(ResultLinks[0], "WebContentEmail.txt")
     [QuestionDic, AnsList] = scrape_web("WebContentEmail.txt")
-    EmailResult = AnsList[0]['html_text']
+    EmailResult = AnsList[0]['text']
 
     return EmailResult
 
