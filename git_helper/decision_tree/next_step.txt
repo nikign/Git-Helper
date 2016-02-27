@@ -1,0 +1,2 @@
+1. Add solution to second push problem
+2. add solution and command list to providePushSolution
