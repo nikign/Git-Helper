@@ -122,15 +122,22 @@ class EmailHandler:
     def send_mail(self, msg_id, to_address, subj, text):
         print 'sending mail to %s' % to_address
         FROM_ADDRESS = 'git_helper@yahoo.com'
-
+        print '61'
         new = MIMEMultipart("mixed")
+        print '62'
         body = MIMEMultipart("alternative")
+        print '63'
         body.attach( MIMEText("reply body text", "plain") )
+        print '64'
         body.attach( MIMEText(text, "html") )
+        print '65'
         new.attach(body)
+        print '66'
 
         new["Message-ID"] = email.utils.make_msgid()
+        print '67'
         new["In-Reply-To"] = msg_id
+        print '68'
         new["References"] = msg_id
         new["Subject"] = "Re: "+subj
         new["To"] = to_address
