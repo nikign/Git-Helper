@@ -127,7 +127,7 @@ class EmailHandler:
         print '62'
         body = MIMEMultipart("alternative")
         print '63'
-        body.attach( MIMEText("reply body text", "plain") )
+        body.attach( MIMEText("reply body text", "html") )
         print '64'
         body.attach( MIMEText(text, "html") )
         print '65'

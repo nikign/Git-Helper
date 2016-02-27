@@ -180,8 +180,7 @@ def main_search_email(Query):
     ResultLink = main_search(Query,EmailQuery = True)
     PageContent = scrape_webs_dumpfile(ResultLink)
     [QuestionDic, AnsList] = scrape_web(PageContent)
-    EmailResult = AnsList[0]['html_text']
-
+    EmailResult = AnsList[0]['text']
     return EmailResult
 
 
