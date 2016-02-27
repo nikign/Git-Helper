@@ -10,7 +10,7 @@ import tfidf
 # Google search return links
 # -------------------------------------------------------
 
-Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
+#Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
 #Query = "error: src refspec master does not match any. "
 
 log_flag = False
@@ -161,19 +161,23 @@ def main_search(Query, WebQuery = None, EmailQuery = None):
     log("new sorted links")
     log(sorted_Links_RemoveEmpty)
 
+    log("sorted_WebResult")
+    log(sorted_WebResult)
+    log(WebQuery)
     if WebQuery: return sorted_WebResult
     if EmailQuery: return sorted_Links_RemoveEmpty[0]
 
 
-def main_search_web(Query, WebQuery= True):
+def main_search_web(Query):
 
-    WebResult = main_search(Query)
+    WebResult = main_search(Query, WebQuery= True)
+    log(WebResult)
 
     return WebResult
 
-def main_search_email(Query, EmailQuery = True):
+def main_search_email(Query):
 
-    ResultLink = main_search(Query)
+    ResultLink = main_search(Query,EmailQuery = True)
     PageContent = scrape_webs_dumpfile(ResultLink)
     [QuestionDic, AnsList] = scrape_web(PageContent)
     EmailResult = AnsList[0]['html_text']
