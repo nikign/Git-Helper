@@ -5,7 +5,8 @@ from colorama import init
 errorKeywordColor = {
     'error:': Fore.RED + 'error:' + Style.RESET_ALL,
     'hint:': Fore.GREEN + 'hint:' + Style.RESET_ALL,
-    'fatal:': Fore.RED + 'fatal:' + Style.RESET_ALL
+    'fatal:': Fore.RED + 'fatal:' + Style.RESET_ALL,
+    'CONFLICT': Fore.RED + 'CONFLICT' + Style.RESET_ALL 
 };
 
 exitMessage = ['Thanks for using Git Helper!','See you next time!']

@@ -49,7 +49,8 @@ def printSolution(explanation, command, solution):
         i = 1
         for value in solution:
             print('\t' + str(i) + '. ' + value)
-            print    
+            print  
+            i += 1  
     print
 
 ##############################################################
@@ -61,12 +62,11 @@ def providePushSolution(msg):
     solution = ''    
     command = ''
     try:
-        #raise NotImplementedError('solution for push command has not been implemented yet')
-        if msg.find('[rejected]') > 0 and msg.find('failed to push some refs to') > 0 and (msg.find('(fetch first)') > 0 or msg.find('(non-fast-forward)')):
+        if msg.find('[rejected]') >= 0 and msg.find('failed to push some refs to') >= 0 and (msg.find('(fetch first)') >= 0 or msg.find('(non-fast-forward)') >= 0):
             explanation = 'The remote server has some work that you do not have on your local machine. You can do a git pull command to get the work you do not have locally.'
             command = ['git pull']
             solution = ["Please use " + Style.DIM + command[0] + Style.RESET_ALL + " command to get the work that you don't have locally."]
-        elif msg.find('src refspec') > 0 and msg.find('does not match any') > 0:
+        elif msg.find('src refspec') >= 0 and msg.find('does not match any') >= 0:
             begin = msg.find('src refspec') + len('src refspec')
             end = msg.find('does not match any')
             branchName = msg[begin:end].lstrip().rstrip()
@@ -75,9 +75,9 @@ def providePushSolution(msg):
                         'git commit -m "Your commit message here"', 
                         'git push origin ' + branchName]
             solution = ['Make sure you have at least one file in your repository folder.',
-                        'Use ' + Style.DIM + command[0] + ' to add files into this commit. Use "." or "-A" for <file-name> if you want to add all files in the repository to this commit.',
-                        'Use ' + Style.DIM + command[1] + ' to commit to local repository.',
-                        'Use ' + Style.DIM + command[2] + ' to push you commit to ' + branchName + ' of remote repository.']
+                        'Use ' + Style.DIM + command[0] + Style.RESET_ALL + ' to add files into this commit. Use "." or "-A" for <file-name> if you want to add all files in the repository to this commit.',
+                        'Use ' + Style.DIM + command[1] + Style.RESET_ALL + ' to commit to local repository.',
+                        'Use ' + Style.DIM + command[2] + Style.RESET_ALL + ' to push your commit to ' + branchName + ' of remote repository.']
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -87,11 +87,36 @@ def providePushSolution(msg):
         print(e)
     return
 
+# Provide solution for Pull Command
+def providePullSolution(msg):
+    explanation = ''
+    solution = ''    
+    command = ''
+    try:
+        if msg.find('CONFLICT') >= 0 and msg.find('Merge conflict') >= 0 and msg.find('merge failed') >= 0:
+            explanation = 'Here I will explain the conflict'
+            command = ['git add <conflict-file-names>', 
+                        'git commit -m "Your commit message here"',
+                        'git push']
+            solution = ['Open conflict files',
+                        'Chose which to keep',
+                        'Use ' + Style.DIM + command[0] + ' to add files into this commit.',
+                        'Use ' + Style.DIM + command[1] + ' to commit to local repository.',
+                        'Use ' + Style.DIM + command[2] + ' to push your commit to remote repository.']
+        else:
+            explanation = constant.noSolutionMessage
+            solution = constant.noSolutionSolution
+        printSolution(explanation,command,solution)
+    except Exception as e:
+        print('Error in providePullSolution():')
+        print(e)
+    return
+
 ##############################################################
 # Constant
 ##############################################################
 # Git commands and their solution provider function
 solutionAvailableCommands = {
-    'push': providePushSolution
-    
+    'push': providePushSolution,
+    'pull': providePullSolution
 }
