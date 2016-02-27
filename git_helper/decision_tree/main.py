@@ -22,14 +22,21 @@ def main():
     while cmd != 'q' and cmd != 'quit':
         runCommand(cmd)
         cmd = getCommand().lstrip().rstrip()
-        
-    print('See you next time!')
+    
+    exitMessage()
     
     return
     
 ###########################################
 # FUNCTIONS
 ###########################################
+# display exit message
+def exitMessage():
+    print
+    for value in constant.exitMessage:
+        print(Fore.GREEN + value + Style.RESET_ALL)
+    print
+    return
 
 # run git commands and print result
 def runCommand(cmd):
@@ -68,15 +75,9 @@ def getGitCommandName(cmd):
 # welcome words
 def greeting():
     print
-    print Fore.GREEN + """
-   ____ _ _     _   _      _                 
-  / ___(_) |_  | | | | ___| |_ __   ___ _ __ 
- | |  _| | __| | |_| |/ _ \ | '_ \ / _ \ '__|
- | |_| | | |_  |  _  |  __/ | |_) |  __/ |   
-  \____|_|\__| |_| |_|\___|_| .__/ \___|_|   
-                            |_|              
-    """ + Style.RESET_ALL
-    print('Please input your commands like you do in bash.')
+    print(constant.gitHelperLogo)
+    for value in constant.instruction:
+        print(Fore.GREEN + value + Style.RESET_ALL)
     print
     return
 
@@ -156,15 +157,8 @@ def providePushSolution(msg):
 
 # Provide solution with decision tree ########################################################################################
 def provideSolution(cmd, msg):
-    print Fore.GREEN + """
-  ___      _      _   _          
- / __| ___| |_  _| |_(_)___ _ _  
- \__ \/ _ \ | || |  _| / _ \ ' \ 
- |___/\___/_|\_,_|\__|_\___/_||_|
-    """ + Style.RESET_ALL
-    #print(Fore.GREEN + '****************************')
-    #print("* Here is the SOLUTION!!!! *")
-    #print('****************************' + Style.RESET_ALL)
+    print(constant.solutionLogo)
+    
     gitcmd = getGitCommandName(cmd)
     
     if solutionAvailableCommands.has_key(gitcmd):
