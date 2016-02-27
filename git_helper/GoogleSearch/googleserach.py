@@ -14,7 +14,7 @@ import tfidf
 #Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
 Query = "error: src refspec master does not match any. "
 
-log_flag = True
+log_flag = False
 def log(content):
     if log_flag: print content
 
@@ -43,7 +43,7 @@ def scrape_webs_dumpfile(link):
     except Exception:
         Content = None
 
-        return Content
+    return Content
 
 
 def scrape_web(filename):
@@ -76,6 +76,7 @@ def scrape_webs(Links):
     for link in Links:
         PageContent=scrape_webs_dumpfile(link)
         if not PageContent: continue
+        #log(PageContent)
         [QuestionDic, AnswerList] = scrape_web(PageContent)
 
         if not (QuestionDic and AnswerList): continue

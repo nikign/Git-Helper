@@ -55,8 +55,13 @@ def filter_result(Input, indexs):
     return Output
 
 def normalize(InputArray):
-    OutputArray = [(number-min(InputArray))/(max(InputArray)-min(InputArray)) for number in InputArray]
-    return OutputArray
+    try:
+        OutputArray = [(number-min(InputArray))/(max(InputArray)-min(InputArray)) for number in InputArray]
+        return OutputArray
+    except Exception:
+        return  InputArray
+
+
 
 def log(InputArray):
     OutputArray = []
