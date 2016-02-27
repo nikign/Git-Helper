@@ -68,9 +68,17 @@ def getGitCommandName(cmd):
 # welcome words
 def greeting():
     print
-    print(Fore.GREEN + '**************************')
-    print('* Welcome to git helper! *')
-    print('**************************' + Style.RESET_ALL)
+    print Fore.GREEN + """
+   ____ _ _     _   _      _                 
+  / ___(_) |_  | | | | ___| |_ __   ___ _ __ 
+ | |  _| | __| | |_| |/ _ \ | '_ \ / _ \ '__|
+ | |_| | | |_  |  _  |  __/ | |_) |  __/ |   
+  \____|_|\__| |_| |_|\___|_| .__/ \___|_|   
+                            |_|              
+    """ + Style.RESET_ALL
+    #print(Fore.GREEN + '**************************')
+    #print('* Welcome to git helper! *')
+    #print('**************************' + Style.RESET_ALL)
     print('Please input your commands like you do in bash.')
     print
     return
@@ -111,10 +119,8 @@ def providePushSolution(msg):
     command = ''
     #raise NotImplementedError('solution for push command has not been implemented yet')
     if msg.find('[rejected]') > 0 and msg.find('failed to push some refs to') > 0 and (msg.find('(fetch first)') > 0 or msg.find('(non-fast-forward)')):
-        explanation = 'The remote server has some work that you do not have on your local machine.'
+        explanation = 'The remote server has some work that you do not have on your local machine. You can do a git pull command to get the work you do not have locally.'
         command = 'git pull'
-        #print('The remote server has some work that you do not have on your local machine.')
-        #print("Please do a '" + Style.DIM + "git pull" + Style.RESET_ALL + "' command to get the work you do not have locally.")
     
     printSolution(explanation,command)
     return
