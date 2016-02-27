@@ -87,6 +87,18 @@ def isSpecialCommand(cmd):
     else:
         return False
 
+# Print formated solution
+# explanation: str; command: list
+def printSolution(explanation, command):
+    print('Explanation:')
+    print
+    print('\t' + explanation)
+    print
+    print('Command:')
+    print
+    print('\t' + Style.DIM + command + Style.RESET_ALL)
+    print
+    print
 # Color the error messages
 def processErrorMessage(msg):
     for key, value in constant.errorKeywordColor.iteritems():
@@ -95,12 +107,16 @@ def processErrorMessage(msg):
 
 # Provide solution for Push Command
 def providePushSolution(msg):
+    explanation = ''
+    command = ''
     #raise NotImplementedError('solution for push command has not been implemented yet')
     if msg.find('[rejected]') > 0 and msg.find('failed to push some refs to') > 0 and (msg.find('(fetch first)') > 0 or msg.find('(non-fast-forward)')):
-        print('The remote server has some work that you do not have on your local machine')
-        print("Please do a '" + Style.DIM + "git pull" + Style.RESET_ALL + "' command to get the work you do not have locally.")
+        explanation = 'The remote server has some work that you do not have on your local machine.'
+        command = 'git pull'
+        #print('The remote server has some work that you do not have on your local machine.')
+        #print("Please do a '" + Style.DIM + "git pull" + Style.RESET_ALL + "' command to get the work you do not have locally.")
     
-    print('\n')
+    printSolution(explanation,command)
     return
 
 # Provide solution with decision tree ########################################################################################
