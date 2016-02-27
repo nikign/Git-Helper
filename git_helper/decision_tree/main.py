@@ -11,7 +11,6 @@ init()
 # main entry
 def main():
 
-
     #os.chdir('E:\\Courses\\CSC 510\\Conflict')
 
 
@@ -22,7 +21,8 @@ def main():
 
     while cmd != 'q' and cmd != 'quit':
         runCommand(cmd)
-        cmd = getCommand()
+        cmd = getCommand().lstrip().rstrip()
+        print cmd
         
     print('See you next time!')
     
@@ -55,9 +55,24 @@ def getCommandName(cmd):
     else:
         return cmd[0:end].lower()
 
+# get git command name from a git command
+def getGitCommandName(cmd):
+    if cmd == 'git':
+        return 'git'
+    rmgit = cmd[cmd.find(' '):].lstrip()
+    end = rmgit.find(' ')
+    if end == -1:
+        return rmgit
+    else:
+        return rmgit[:rmgit.find(' ')]
+
 # welcome words
 def greeting():
     print(Fore.RED + Back.GREEN + 'Welcome to git helper!' + Style.RESET_ALL)
+
+# check if a command is git command
+def isGitCommand(cmd):
+    return cmd.find('git') == 0
 
 # check if is special command that can't run by subprocess.check_output()
 def isSpecialCommand(cmd):
@@ -73,6 +88,28 @@ def processErrorMessage(msg):
         msg = msg.replace(key,value)
     return msg
 
+# Provide solution for Push Command
+def providePushSolution(msg):
+    #raise NotImplementedError('solution for push command has not been implemented yet')
+    if msg.find('[rejected]') > 0 and msg.find('failed to push some refs to') > 0 and (msg.find('(fetch first)') > 0 or msg.find('(non-fast-forward)')):
+        print('The remote server has some work that you do not have on your local machine')
+        print("Please do a '" + Back.CYAN + "git pull" + Style.RESET_ALL + "' command to get the work you do not have locally.")
+    print('\n')
+    return
+
+# Provide solution with decision tree ########################################################################################
+def provideSolution(cmd, msg):
+    print(Fore.GREEN + Back.YELLOW + '****************************')
+    print("* Here is the SOLUTION!!!! *")
+    print('****************************' + Style.RESET_ALL)
+    gitcmd = getGitCommandName(cmd)
+    
+    if solutionAvailableCommands.has_key(gitcmd):
+        solutionAvailableCommands[gitcmd](msg)
+    else:
+        raise NotImplementedError('solution for other commands has not implemented yet.')
+    return
+
 # run common commands
 def runCommonCommands(cmd):
     try:
@@ -80,8 +117,9 @@ def runCommonCommands(cmd):
         print(result)
     except subprocess.CalledProcessError as e:
         msg = processErrorMessage(e.output)
-        #provideSolution()
         print(msg)
+        if isGitCommand(cmd):
+            provideSolution(cmd, msg)
     except Exception as e:
         print(e)
     return
@@ -106,6 +144,7 @@ def runCdCommand(cmd):
     return
 
 
+
 ##################################################
 # Constants
 ##################################################
@@ -113,7 +152,11 @@ specialCommands = {
     'cd': runCdCommand
 }
 
+solutionAvailableCommands = {
+    'push': providePushSolution
+    
+}
+
 
 
 main()
-

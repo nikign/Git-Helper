@@ -7,3 +7,4 @@ errorKeywordColor = {
     'hint:': Back.GREEN + 'hint:' + Style.RESET_ALL,
     'fatal:': Back.RED + 'fatal:' + Style.RESET_ALL
 };
+
