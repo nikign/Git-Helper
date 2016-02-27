@@ -76,9 +76,6 @@ def greeting():
   \____|_|\__| |_| |_|\___|_| .__/ \___|_|   
                             |_|              
     """ + Style.RESET_ALL
-    #print(Fore.GREEN + '**************************')
-    #print('* Welcome to git helper! *')
-    #print('**************************' + Style.RESET_ALL)
     print('Please input your commands like you do in bash.')
     print
     return
@@ -94,18 +91,30 @@ def isSpecialCommand(cmd):
         return True
     else:
         return False
-
+    
 # Print formated solution
-# explanation: str; command: list
-def printSolution(explanation, command):
-    print('Explanation:')
-    print
-    print('\t' + explanation)
-    print
-    print('Command:')
-    print
-    print('\t' + Style.DIM + command + Style.RESET_ALL)
-    print
+# explanation: str; command: list; solution: list
+def printSolution(explanation, command, solution):
+    if explanation != '':
+        print(Fore.GREEN + 'Explanation:' + Style.RESET_ALL)
+        print
+        print('\t' + explanation)
+        print
+    if command != '':
+        print(Fore.GREEN + 'Command:' + Style.RESET_ALL)
+        print
+        i = 1
+        for value in command:
+            print('\t' + str(i) + '. ' + Style.DIM + value + Style.RESET_ALL)
+            print
+            i += 1
+    if solution != '':
+        print(Fore.GREEN + 'Solution:' + Style.RESET_ALL)
+        print
+        i = 1
+        for value in solution:
+            print('\t' + str(i) + '. ' + value)
+            print    
     print
 # Color the error messages
 def processErrorMessage(msg):
@@ -116,20 +125,34 @@ def processErrorMessage(msg):
 # Provide solution for Push Command
 def providePushSolution(msg):
     explanation = ''
+    solution = ''    
     command = ''
+
     #raise NotImplementedError('solution for push command has not been implemented yet')
     if msg.find('[rejected]') > 0 and msg.find('failed to push some refs to') > 0 and (msg.find('(fetch first)') > 0 or msg.find('(non-fast-forward)')):
         explanation = 'The remote server has some work that you do not have on your local machine. You can do a git pull command to get the work you do not have locally.'
-        command = 'git pull'
+        command = ['git pull']
+        solution = ["Please use git pull command to get the work that you don't have locally."]
+    elif msg.find('src refspect') > 0 and msg.find('does not match any') > 0:
+        explanation = '' 
     
-    printSolution(explanation,command)
+    else:
+        explanation = constant.noSolutionMessage
+        solution = constant.noSolutionSolution
+    printSolution(explanation,command,solution)
     return
 
 # Provide solution with decision tree ########################################################################################
 def provideSolution(cmd, msg):
-    print(Fore.GREEN + '****************************')
-    print("* Here is the SOLUTION!!!! *")
-    print('****************************' + Style.RESET_ALL)
+    print Fore.GREEN + """
+  ___      _      _   _          
+ / __| ___| |_  _| |_(_)___ _ _  
+ \__ \/ _ \ | || |  _| / _ \ ' \ 
+ |___/\___/_|\_,_|\__|_\___/_||_|
+    """ + Style.RESET_ALL
+    #print(Fore.GREEN + '****************************')
+    #print("* Here is the SOLUTION!!!! *")
+    #print('****************************' + Style.RESET_ALL)
     gitcmd = getGitCommandName(cmd)
     
     if solutionAvailableCommands.has_key(gitcmd):
