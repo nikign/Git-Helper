@@ -3,7 +3,6 @@ import requests
 from google import search
 from stack_overflow_parser.QuestionParser import QuestionParser
 from stack_overflow_parser.AnswerParser import AnswerParser
-import copy
 
 import TFIDF_cal as SortUtils
 import tfidf
@@ -11,11 +10,14 @@ import tfidf
 # Google search return links
 # -------------------------------------------------------
 
-#Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
-Query = "error: src refspec master does not match any. "
+Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
+#Query = "error: src refspec master does not match any. "
 
 log_flag = False
 def log(content):
+    """
+    Print function
+    """
     if log_flag: print content
 
 def google_search_engine(query):
@@ -25,7 +27,7 @@ def google_search_engine(query):
     Links = []
     QueryStackover = 'site:stackoverflow.com %s' % query
     #print QueryStackover
-    for url in search(QueryStackover, tld='es', lang='es', stop=30):
+    for url in search(QueryStackover, tld='es', lang='es', stop=15):
         Links.append(url)
     return Links
 
@@ -73,6 +75,7 @@ def scrape_webs(Links):
     QuesionContent = []
     AnswerContent = []
     QuestionVotes = []
+    WebResult = []
     for link in Links:
         PageContent=scrape_webs_dumpfile(link)
         if not PageContent: continue
@@ -80,50 +83,48 @@ def scrape_webs(Links):
         [QuestionDic, AnswerList] = scrape_web(PageContent)
 
         if not (QuestionDic and AnswerList): continue
-        QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
-        QuestionVotes.append(QuestionDic["votes"])
-        AnswerTemp = ''
 
+        Title = QuestionDic['title']
+        Abstract = QuestionDic['text']
+        obj = {'title': Title, 'link': link, 'abstract': Abstract}
+        QuestionTemp = QuestionDic["title"] + QuestionDic["text"]
+
+        AnswerTemp = ''
         for Answer in AnswerList:
-            #print Answer['votes']
-            #print type(Answer['votes'])
             if Answer['votes']>0:
-                #print "vote larage than 0"
-                #print Answer['text']
                 AnswerTemp = AnswerTemp + Answer['text']
 
         if AnswerTemp !='' and QuestionTemp != '':
             Links_RemoveEmpty.append(link)
+            QuestionVotes.append(QuestionDic["votes"])
             QuesionContent.append(QuestionTemp)
             AnswerContent.append(AnswerTemp)
-        else:
-            #print "Link %d answer  content is empty" % Links.index(link)
-            pass
+            WebResult.append(obj)
 
-    return [Links_RemoveEmpty, QuestionVotes, QuesionContent, AnswerContent]
+    return [Links_RemoveEmpty, QuestionVotes, QuesionContent, AnswerContent, WebResult]
 
 
 
 
-def main_search(Query):
+def main_search(Query, WebQuery = None, EmailQuery = None):
     """
     Given a query, return our search result.
 
     """
 
     Links = google_search_engine(Query)
-    [Links_RemoveEmpty,QuestionVotes, QuestionContent, AnswerContent]=scrape_webs(Links)
+
+    [Links_RemoveEmpty,QuestionVotes, QuestionContent, AnswerContent, WebResult]=scrape_webs(Links)
+
+    log("Orignal link:")
+    log(Links_RemoveEmpty)
 
     #extract chars from string error
     [Query_clean] = SortUtils.cleanStrings([Query])
     QueryChars = SortUtils.target_words_extract(Query_clean)
 
-
-    #print "QueryChars is:", QueryChars
-    QuestionContentOrigin = copy.deepcopy(QuestionContent)
     QuestionContent = SortUtils.cleanStrings(QuestionContent)
     AnswerContent = SortUtils.cleanStrings(AnswerContent)
-
     QuestionAndAnswerContent = ['%s %s' % Content for Content in zip(QuestionContent,AnswerContent)]
 
     #cal tfidf
@@ -138,121 +139,49 @@ def main_search(Query):
 
     SimilaritiesResult = Tfidf_table.similarities(QueryChars)
     SimilaritiesResult = [Result[1] for Result in SimilaritiesResult]
-    Newindex = sorted(range(len(SimilaritiesResult)), key=lambda k: SimilaritiesResult[k], reverse=True)
-
 
     SimilaritiesResult = SortUtils.normalize(SimilaritiesResult)
-    log("before QuestionVotes")
-    log(QuestionVotes)
-    QuestionVotes = SortUtils.log(QuestionVotes)
-
-    log("log votes")
-    log(QuestionVotes)
+    QuestionVotes = SortUtils.mathlog(QuestionVotes)
     QuestionVotes = SortUtils.normalize(QuestionVotes)
-    log("after QuestionVotes")
-    log(QuestionVotes)
+    #log("after QuestionVotes")
+    #log(QuestionVotes)
 
 
     FitValue = [sim*0.6+que*0.4 for sim, que in zip(SimilaritiesResult, QuestionVotes)]
-    log("Fit value")
-    log(FitValue)
-
-    Newindex = sorted(range(len(FitValue)), key=lambda k: FitValue[k], reverse=True)
+    Index_sortedby_fit = sorted(range(len(FitValue)), key=lambda k: FitValue[k], reverse=True)
+    Index_sortedby_sim = sorted(range(len(SimilaritiesResult)), key=lambda k: SimilaritiesResult[k], reverse=True)
+    log("sort by similarity")
+    log(Index_sortedby_sim)
+    log("votes")
+    log(QuestionVotes)
     log("sort by Fitvalue")
-    log(Newindex)
+    log(Index_sortedby_fit)
 
-    [Links_RemoveEmpty] = SortUtils.filter_result([Links_RemoveEmpty],Newindex)
+    [sorted_Links_RemoveEmpty, sorted_WebResult] = SortUtils.filter_result([Links_RemoveEmpty, WebResult],Index_sortedby_fit)
+    log("new sorted links")
+    log(sorted_Links_RemoveEmpty)
 
-
-    return Links_RemoveEmpty[:10]
-
-
-
-    #
-    # print "==================================================================="
-    # print "                              Links                                "
-    # print "==================================================================="
-    # #print len(Links_RemoveEmpty), Links_RemoveEmpty
-    #
-    # print "==================================================================="
-    # print "                          Question Content                         "
-    # print "==================================================================="
-    # print len(QuestionContent), QuestionContent
-    # print "==================================================================="
-    # print "                           Answer Content                          "
-    # print "==================================================================="
-    # #print len(AnswerContent), AnswerContent
-    # print "==================================================================="
-    # print "                 Question&Answer Content                          "
-    # print "==================================================================="
-    # #print len(QuestionAndAnswerContent), QuestionAndAnswerContent
+    if WebQuery: return sorted_WebResult
+    if EmailQuery: return sorted_Links_RemoveEmpty[0]
 
 
-    # Use similarity to filter result
-    #SimilairtyResult_index = SortUtils.cal_title_similarity([Query], QuestionContent, 0.2)
-    #print "SimilairtyResult is: ", SimilairtyResult_index
+def main_search_web(Query, WebQuery= True):
 
-    #[Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, QuestionAndAnswerContent] = \
-     #   SortUtils.filter_result([Links_RemoveEmpty, QuestionContentOrigin, QuestionContent, AnswerContent, \
-      #                           QuestionAndAnswerContent],SimilairtyResult_index)
+    WebResult = main_search(Query)
 
-    # print "==================================================================="
-    # print "                              Links                                "
-    # print "==================================================================="
-    # print len(Links_RemoveEmpty), Links_RemoveEmpty
-    #
-    # print "==================================================================="
-    # print "                          Question Content                         "
-    # print "==================================================================="
-    # print len(QuestionContent), QuestionContent
-    # print "==================================================================="
-    # print "                           Answer Content                          "
-    # print "==================================================================="
-    # print len(AnswerContent), AnswerContent
-    # print "==================================================================="
-    # print "                 Question&Answer Content                          "
-    # print "==================================================================="
-    # print len(QuestionAndAnswerContent), QuestionAndAnswerContent
-
-
-
-
-    # TfidfValueMatrix = SortUtils.cal_tfidf(QueryChars, QuestionAndAnswerContent)
-    #
-    # RankResult_index = SortUtils.rank_tfidfMatrix(TfidfValueMatrix, 0)
-    #
-    # [Links_RemoveEmpty] = \
-    #     SortUtils.filter_result([Links_RemoveEmpty],RankResult_index)
-    # print Links_RemoveEmpty
-    # return Links_RemoveEmpty
-
-def main_search_web(Query):
-
-    ResultLinks = main_search(Query)
-    WebResult = []
-    for link in ResultLinks:
-        log(link)
-        PageContent =  scrape_webs_dumpfile(link)
-        [QuestionDic, AnsList] = scrape_web(PageContent)
-        title = QuestionDic['title']
-        abstract = QuestionDic['text']
-        obj = {'title': title, 'link': link, 'abstract': abstract}
-        WebResult.append(obj)
-
-    #print WebResult[1]
     return WebResult
 
-def main_search_email(Query):
+def main_search_email(Query, EmailQuery = True):
 
-    ResultLinks = main_search(Query)
-    PageContent = scrape_webs_dumpfile(ResultLinks[0])
+    ResultLink = main_search(Query)
+    PageContent = scrape_webs_dumpfile(ResultLink)
     [QuestionDic, AnsList] = scrape_web(PageContent)
     EmailResult = AnsList[0]['html_text']
 
     return EmailResult
 
 
-#main_search_web(Query)
+main_search_web(Query)
 #main_search_email(Query)
 
 #if __name__ == '__main__':
