@@ -20,8 +20,8 @@ class AnswerParser:
 
 	def make_answers_list(self):
 		try:
-			with open(self.input_file, 'r') as input_file:
-				input_str = input_file.read()
+			#with open(self.input_file, 'r') as input_file:
+				input_str = self.input_file
 				answers_div = BeautifulSoup(input_str).find("div", id="answers")
 				answers_divs = BeautifulSoup(str(answers_div)).findAll("div", {"class": "answer"})
 				answers = []
