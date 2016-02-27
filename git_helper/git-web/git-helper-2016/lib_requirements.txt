@@ -1,8 +1,7 @@
 #libraries needed for running googlesearch
-requests
-sklearn
+requests 2.6.0
+urllib3 1.10.3
 stop-words
-pandas
 google 1.06
 #libraries needed for running parser script
 BeautifulSoup4
