@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <div class="row">
 <div class="col-md-offset-2 col-md-1">
   <a href="./">
@@ -26,24 +28,41 @@
 
 <div>
 {% if result %}
+  {% set count = 0 %}
   {% for item in result %}
-
+  {% set count = count +1 %}
   <div class="row">
     <div class="col-md-offset-1 col-md-8">
       <h3>
-        <a href="{{item.link}}" target="_blank">
+        <a href="{{item.link}}" onclick="isHelpful('{{item.link}},{{key}}')" target="_blank">
           {{item.title}}
         </a>
       </h3>
-      <p>
-        {{item.abstract}}
-      </p>
-      <a class="text-success" href="{{item.link}}" target="_blank">
+      <div class="content hideContent">
+        <p>
+          {{item.abstract}}
+        </p>
+      </div>
+      <div class="show-more">
+        <a href="{{item.link}}" onclick="isHelpful('{{item.link}},{{key}}')" target="_blank">...more</a>
+      </div>
+      <br>
+      <a class="text-success" href="{{item.link}}" onclick="isHelpful('{{item.link}},{{key}}')" target="_blank">
         {{item.link}}
       </a>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-offset-1 col-md-8">
+      <span>
+        Does this link help?
+      </span>
+      <button type="button" id="yes{{count}}" class="btn btn-default" onclick="rateLink('{{item.link}}','{{key}}','yes','{{count}}')">yes</button>
+      <button type="button" id="no{{count}}" class="btn btn-default" onclick="rateLink('{{item.link}}','{{key}}','no','{{count}}')">no</button>
+    </div>
+  </div>
   <hr>
+
   {% endfor %}
 {% else %}
 <div class="row">

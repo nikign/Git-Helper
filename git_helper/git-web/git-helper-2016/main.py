@@ -15,14 +15,16 @@
 # limitations under the License.
 #
 import os
-
+import datetime
 import webapp2
 import jinja2
+
 
 import sys
 sys.path.insert(0, 'libs')
 
 from rate_results import get_web_results
+from models.logs import GetResultLog,InteractionLog
 
 template_dir = os.path.join(os.path.dirname(__file__), 'site')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -44,11 +46,41 @@ class MainPage(Handler):
         self.render("index.html")
     def post(self):
         key = self.request.get('key')
+        resLog = GetResultLog(startTime = datetime.datetime.now(), errorMessage = key)
         res = get_web_results(key)
-        print res
+        resLog.returnedLink = str(t.encode('ascii','ignore') for t in [item['link'] for item in res])
+        resLog.endTime = datetime.datetime.now()
+        resLog.put()
+        #print res
         self.render("result.html",result = res,key=key)
+
+class StoreClickLog(Handler):
+    def post(self):
+        errorMessage = self.request.get('errorMessage')
+        link = self.request.get('link')
+        userLog = InteractionLog(errorMessage = errorMessage)
+        userLog.clickedLink = link
+        userLog.clickTime = datetime.datetime.now()
+        userLog.put()
+
+class RateLink(Handler):
+    def post(self):
+        errorMessage = self.request.get('errorMessage')
+        link = self.request.get('link')
+        isHelpful = self.request.get('helpful')
+        userLog = InteractionLog(errorMessage = errorMessage)
+        userLog.clickedLink = link
+        userLog.clickTime = datetime.datetime.now()
+        if isHelpful == 'yes':
+            userLog.isHelpful = True
+        else:
+            userLog.isHelpful = False
+        userLog.put()
+
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage)
+    ('/', MainPage),
+    ('/storeClickLog',StoreClickLog),
+    ('/rateLink',RateLink)
 ], debug=True)

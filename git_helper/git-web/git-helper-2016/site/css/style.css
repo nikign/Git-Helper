@@ -28,3 +28,13 @@ h1,h2,h3,h4{
     margin: 1em 0;
     padding: 0;
 }
+.hideContent {
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 4.5em;
+}
+
+.showContent {
+    line-height: 1em;
+    height: auto;
+}
