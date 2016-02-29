@@ -1,0 +1,23 @@
+1. Revise solution message for pull command
+
+From https://github.com/YihuanDong/Conflict
+   d58afb5..3223870  master     -> origin/master
+Auto-merging test.py
+CONFLICT (content): Merge conflict in test.py
+Auto-merging menu.py
+CONFLICT (content): Merge conflict in menu.py
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+
+
+U       README.md
+U       menu.py
+U       test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+
+
+
+2. Add another pull solution
