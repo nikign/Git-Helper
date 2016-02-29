@@ -1,6 +1,7 @@
 from colorama import init
 from colorama import Fore, Back, Style
 import constant
+
 ##############################################################
 # Functions
 ##############################################################
@@ -30,7 +31,6 @@ def getUnmergedFiles(msg,type):
         for value in msg.splitlines():
             keyword = 'U\t'
             index = value.find(keyword)
-            print index
             if index >= 0:
                 begin =  index + len(keyword)
                 conflictFiles.append(value[begin:].lstrip().rstrip())
@@ -84,6 +84,7 @@ def providePushSolution(msg):
     explanation = ''
     solution = ''    
     command = ''
+    hasSolution = True
     try:
         if msg.find('[rejected]') >= 0 and msg.find('failed to push some refs to') >= 0 and (msg.find('(fetch first)') >= 0 or msg.find('(non-fast-forward)') >= 0):
             explanation = 'The remote server has some work that you do not have on your local machine. You can do a git pull command to get the work you do not have locally.'
@@ -104,7 +105,12 @@ def providePushSolution(msg):
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
+            hasSolution = False
+
         printSolution(explanation,command,solution)
+        
+        #logging
+        constant.log['hasSolution'] = False
     except Exception as e:
         print('Error in providePushSolution():')
         print(e)
@@ -115,6 +121,7 @@ def providePullSolution(msg):
     explanation = ''
     solution = ''    
     command = ''
+    hasSolution = True
     try:
         if msg.find('CONFLICT') >= 0 and msg.find('Merge conflict') >= 0 and msg.find('merge failed') >= 0:
             conflictFiles = getUnmergedFiles(msg, 'conflict')
@@ -167,7 +174,11 @@ def providePullSolution(msg):
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
+            hasSolution = False
         printSolution(explanation,command,solution)
+        
+        #logging
+        constant.log['hasSolution'] = hasSolution
     except Exception as e:
         print('Error in providePullSolution():')
         print(e)

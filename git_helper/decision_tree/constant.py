@@ -22,6 +22,8 @@ gitHelperLogo = Fore.GREEN + """
 
 instruction = ['Please input your commands like you do in bash.', 'Use "q" or "quit" to exit Git Helper.']
 
+logFilePath = 'log.csv'
+
 noSolutionMessage = 'Sorry, no internal solution for this error now.'
 
 noSolutionSolution = ['Copy and paste error message to stackoverflow.com to seek for solution',
@@ -35,3 +37,13 @@ solutionLogo = Fore.GREEN + """
  |___/\___/_|\_,_|\__|_\___/_||_|
     """ + Style.RESET_ALL
 
+log = {
+    'time': None,
+    'userCmd': None,
+    'isGitCommand': None,
+    'gitCommand': None,
+    'isError': None,
+    'result': None,
+    'hasSolution': None,
+    'satisfy': None
+}
