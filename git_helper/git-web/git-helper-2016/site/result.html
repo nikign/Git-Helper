@@ -1,4 +1,77 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>Here is the result page.</h1>
+
+<div class="row">
+<div class="col-md-offset-2 col-md-1">
+  <a href="./">
+  <img src="/image/logo.jpg" width="150" height="46" alt="Git Helper" ></img>
+  </a>
+</div>
+<div class="col-md-7">
+  <div id="input_box" class="text-center">
+    <form method="post" class="form-inline">
+      <div class="input-group form-group">
+        <input type="text" class="form-control input-lg" size="50" value="{{key}}" name="key">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-default input-lg">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+  </div>
+
+</div>
+<hr class="draw_line">
+
+<div>
+{% if result %}
+  {% set count = 0 %}
+  {% for item in result %}
+  {% set count = count +1 %}
+  <div class="row">
+    <div class="col-md-offset-1 col-md-8">
+      <h3>
+        <a href="{{item.link}}" onclick="isHelpful('{{item.link}},{{key}}')" target="_blank">
+          {{item.title}}
+        </a>
+      </h3>
+      <div class="content hideContent">
+        <p>
+          {{item.abstract}}
+        </p>
+      </div>
+      <div class="show-more">
+        <a href="{{item.link}}" onclick="isHelpful('{{item.link}},{{key}}')" target="_blank">...more</a>
+      </div>
+      <br>
+      <a class="text-success" href="{{item.link}}" onclick="isHelpful('{{item.link}},{{key}}')" target="_blank">
+        {{item.link}}
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-offset-1 col-md-8">
+      <span>
+        Does this link help?
+      </span>
+      <button type="button" id="yes{{count}}" class="btn btn-default" onclick="rateLink('{{item.link}}','{{key}}','yes','{{count}}')">yes</button>
+      <button type="button" id="no{{count}}" class="btn btn-default" onclick="rateLink('{{item.link}}','{{key}}','no','{{count}}')">no</button>
+    </div>
+  </div>
+  <hr>
+
+  {% endfor %}
+{% else %}
+<div class="row">
+  <div class="col-md-offset-1 col-md-8">
+    <h2>
+      Sorry, we cannot find a solution for your error at this moment.
+    </h2>
+  </div>
+</div>
+{% endif %}
+</div>
 {% endblock %}

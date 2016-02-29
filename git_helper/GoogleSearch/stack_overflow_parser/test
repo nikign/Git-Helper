@@ -1,0 +1,5 @@
+from QuestionParser import QuestionParser
+a = QuestionParser('/Users/Linting/Google Drive/CSC510/Project/SE-16/git_helper/GoogleSearch/webcontent.txt')
+result = a.make_question()
+print result.keys()
+print result['text']
