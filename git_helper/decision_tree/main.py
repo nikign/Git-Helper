@@ -14,7 +14,7 @@ init()
 
 # main entry
 def main():
-    #os.chdir('E:\\Courses\\CSC 510\\Conflict')
+    os.chdir('E:\\Courses\\CSC 510\\Conflict')
 
     greeting()
     
@@ -32,6 +32,7 @@ def main():
         logFile = open(constant.logFilePath,'ab')
         logWriter = csv.writer(logFile)
     
+    #Start loop
     while True:
         resetLog()  
               
@@ -50,12 +51,12 @@ def main():
             runCommand(cmd)
         else:
             break
-        
+
         #write to log file
         writeToLog(logWriter)
         
-        
-    #log again
+    constant.log['isSatisfy'] = solutionProvider.askSatisfaction()    
+    #Write q command log and user satisfaction
     writeToLog(logWriter)
     
     exitMessage()
@@ -65,6 +66,7 @@ def main():
 ###########################################
 # FUNCTIONS
 ###########################################
+
 # display exit message
 def exitMessage():
     print
@@ -200,7 +202,7 @@ def writeToLog(logWriter):
     lst.append(constant.log['isError'])
     lst.append(constant.log['result'])
     lst.append(constant.log['hasSolution'])
-    lst.append(constant.log['satisfy'])
+    lst.append(constant.log['isSatisfy'])
     logWriter.writerow(lst)
     return
 

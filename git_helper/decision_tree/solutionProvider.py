@@ -13,9 +13,22 @@ def provideSolution(cmd, msg):
     
     if solutionAvailableCommands.has_key(gitcmd):
         solutionAvailableCommands[gitcmd](msg)
+        
+        #logging
+        constant.log['isSatisfy'] = askSatisfaction()
     else:
-        raise NotImplementedError('solution for other commands has not implemented yet.')
+        #raise NotImplementedError('solution for other commands has not implemented yet.')
+        print('Sorry, solution for ' + cmd + ' command is not available.\n')
     return
+
+# ask for user satisfaction
+def askSatisfaction():
+    reply = raw_input('Are you satisfied with the solutions? (yes/no): ')
+    while not (reply == 'yes' or reply == 'no'):
+        print('Sorry, your response is not valid. Please try again.')
+        reply = raw_input('Are you satisfied with the solution? (yes/no): ')
+    return reply
+
 
 # Get conflict/unmerged file list from two types of conflict messages
 def getUnmergedFiles(msg,type):

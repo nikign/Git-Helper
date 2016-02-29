@@ -45,5 +45,5 @@ log = {
     'isError': None,
     'result': None,
     'hasSolution': None,
-    'satisfy': None
+    'isSatisfy': None
 }
