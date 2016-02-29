@@ -63,7 +63,6 @@ def main():
     logFile.close()    
     return
     
-
 ###########################################
 # FUNCTIONS
 ###########################################
@@ -161,7 +160,7 @@ def runCommonCommands(cmd):
         constant.log['isError'] = True
         constant.log['result'] = str(e)
     return
-
+    
 # run special commands
 def runSpecialCommand(cmd):    
     specialCommands[getCommandName(cmd)](cmd)
@@ -213,6 +212,7 @@ def writeToLog(logWriter):
 specialCommands = {
     'cd': runCdCommand
 }
+
 
 
 ###################################################
