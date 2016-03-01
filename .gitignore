@@ -1,4 +1,5 @@
 *.pyc
+log.csv
 git_helper/*.txt
 git_helper/GoogleSearch/.idea
 git_helper/GoogleSearch/*.txt
