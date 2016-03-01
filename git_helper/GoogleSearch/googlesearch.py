@@ -27,7 +27,7 @@ def google_search_engine(query):
     Links = []
     QueryStackover = 'site:stackoverflow.com %s' % query
     #print QueryStackover
-    for url in search(QueryStackover, tld='es', lang='es', stop=15):
+    for url in search(QueryStackover, tld='es', lang='es', stop=1):
         Links.append(url)
     return Links
 
@@ -178,11 +178,12 @@ def main_search_web(Query):
 def main_search_email(Query):
 
     ResultLink = main_search(Query,EmailQuery = True)
+    # print 'result: ', ResultLink
     PageContent = scrape_webs_dumpfile(ResultLink)
     [QuestionDic, AnsList] = scrape_web(PageContent)
     EmailResult = AnsList
 
-    return EmailResult
+    return QuestionDic, AnsList, ResultLink
 
 
 #main_search_web(Query)

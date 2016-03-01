@@ -1,5 +1,5 @@
-from GoogleSearch.googleserach import main_search_web
-from GoogleSearch.googleserach import main_search_email
+from GoogleSearch.googlesearch import main_search_web
+from GoogleSearch.googlesearch import main_search_email
 
 # Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
 
