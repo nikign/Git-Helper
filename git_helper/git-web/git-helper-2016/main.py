@@ -47,8 +47,10 @@ class MainPage(Handler):
     def post(self):
         key = self.request.get('key')
         resLog = GetResultLog(startTime = datetime.datetime.now(), errorMessage = key)
+        #TODO: deal with unicode characters
+        #key = key.encode('ascii','ignore')
         res = get_web_results(key)
-        resLog.returnedLink = str(t.encode('ascii','ignore') for t in [item['link'] for item in res])
+        resLog.returnedLink = str([t.encode('ascii','ignore') for t in [item['link'] for item in res]])
         resLog.endTime = datetime.datetime.now()
         resLog.put()
         #print res
