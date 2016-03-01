@@ -8,7 +8,14 @@ import poplib
 import smtplib
 import time
 
-from rate_results import get_email_result
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
+from  rate_results import get_email_result
+
+SURVEY_LINK = 'http://goo.gl/forms/5MU1QUJNou'
 # pip install BeautifulSoup4
 
 def get_message_info(message):
@@ -47,14 +54,15 @@ class EmailHandler:
     pop_conn = None
     mail_server = None
     emails_answered = 0
+    email_record_file = 'git_email_helper/last_answered_email.txt'
 
     def record_answered_mails(self):
-        with open("last_answered_email.txt", 'w') as out:
+        with open(self.email_record_file, 'w') as out:
             out.write(str(self.emails_answered))
 
     def load_answered_mails(self):
         try:
-            with open("last_answered_email.txt", 'r') as in_file:
+            with open(self.email_record_file, 'r') as in_file:
                 self.emails_answered = eval(in_file.read())
         except Exception:
             self.emails_answered = 0
@@ -71,6 +79,8 @@ class EmailHandler:
                 pop_conn.pass_(password)
                 MAIL_SERVER = 'smtp.mail.yahoo.com'
                 mail_server = smtplib.SMTP(MAIL_SERVER, 587)
+                mail_server.ehlo()
+
                 mail_server.starttls()
                 mail_server.login(user_name, password)
                 print 'smtp Connection made'
@@ -80,6 +90,12 @@ class EmailHandler:
         self.pop_conn = pop_conn
         self.mail_server = mail_server
 
+    def create_mail_body(self, question, answer, link_to_page, link_to_survey):
+        mail_body = ('Hi,<br> This question and its top answer seem close to your problem.<br>'+\
+            'Question:<br>%s<br> Top Answer:<br>%s<br> You can view the complete conversation in this link:<br>%s<br>'+\
+            ' To help us improve this tool, please take a minute to complete this survey:<br>'+\
+            '%s<br> Thanks,<br>The Git_Helper Team') %(str(question), str(answer), link_to_page, link_to_survey)
+        return mail_body
 
     def check_mail(self):
         self.connect()
@@ -94,7 +110,10 @@ class EmailHandler:
                         msg = self.pop_conn.retr(i+1)[1] # new statement
                         msg_text = get_message_text(msg)
                         msg_text = covert_html_to_text(msg_text)
-                        msg_response = get_email_result(msg_text)
+                        question, answer, link = get_email_result(msg_text)
+                        answer = answer[0]['html_text']
+                        question = question['html_text']
+                        msg_response = self.create_mail_body(question, answer, link, SURVEY_LINK)
                         msg_id, sender, subj = get_message_info(msg)
                         self.send_mail(msg_id, sender, subj, msg_response)
                     except Exception as e: # email can't be parsed or sent, still mark it as answered
@@ -116,7 +135,7 @@ class EmailHandler:
         print 'sending mail to %s' % to_address
         FROM_ADDRESS = 'git_helper@yahoo.com'
 
-        new = MIMEMultipart("mixed")
+        new = MIMEMultipart("alternative")
         body = MIMEMultipart("alternative")
         body.attach( MIMEText("reply body text", "plain") )
         body.attach( MIMEText(text, "html") )
