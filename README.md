@@ -14,7 +14,7 @@ Project proposal: Making Git Closer to Human Being. We aim to develp git helper 
   
   4. Sample logs Link: 
   
-      a. [Git helper web]()
+      a. [Git helper web](https://github.com/nikign/Git-Helper/issues/63)
 
       b. [Git helper email]()
       
