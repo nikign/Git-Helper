@@ -7,18 +7,24 @@ import constant
 ##############################################################
 # Provide solution with decision tree
 def provideSolution(cmd, msg):
+    print(Fore.GREEN + '##############################################################################')
     print(constant.solutionLogo)
+    print('##############################################################################' + Style.RESET_ALL)
     
     gitcmd = getGitCommandName(cmd)
     
     if solutionAvailableCommands.has_key(gitcmd):
         solutionAvailableCommands[gitcmd](msg)
         
-        #logging
-        constant.log['isSatisfy'] = askSatisfaction()
     else:
         #raise NotImplementedError('solution for other commands has not implemented yet.')
         print('Sorry, solution for ' + cmd + ' command is not available.\n')
+    print(Fore.GREEN + '##############################################################################')
+    print('Solution Ended')
+    print('##############################################################################' + Style.RESET_ALL)
+    
+    #logging
+    constant.log['isSatisfy'] = askSatisfaction()
     return
 
 # ask for user satisfaction
