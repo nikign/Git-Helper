@@ -8,7 +8,13 @@ import poplib
 import smtplib
 import time
 
-from rate_results import get_email_result
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
+from  rate_results import get_email_result
+
 SURVEY_LINK = 'http://goo.gl/forms/5MU1QUJNou'
 # pip install BeautifulSoup4
 
@@ -48,14 +54,15 @@ class EmailHandler:
     pop_conn = None
     mail_server = None
     emails_answered = 0
+    email_record_file = 'git_email_helper/last_answered_email.txt'
 
     def record_answered_mails(self):
-        with open("last_answered_email.txt", 'w') as out:
+        with open(self.email_record_file, 'w') as out:
             out.write(str(self.emails_answered))
 
     def load_answered_mails(self):
         try:
-            with open("last_answered_email.txt", 'r') as in_file:
+            with open(self.email_record_file, 'r') as in_file:
                 self.emails_answered = eval(in_file.read())
         except Exception:
             self.emails_answered = 0
