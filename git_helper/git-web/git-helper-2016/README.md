@@ -6,3 +6,4 @@
 
 ## Install
 - Run setup.py to install required packages. All the packages will be installed in lib under the GAE project folder.
+- Run copy_files_to_GAE.py in the git-helper folder to copy all needed files into this folder.
