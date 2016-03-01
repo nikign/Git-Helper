@@ -10,3 +10,4 @@ git_helper/git-web/git-helper-2016/site/css/bootstrap
 git_helper/git-web/git-helper-2016/*.pyc
 *.pyc
 git_helper/git-web/git-helper-2016/lib/*
+git_helper/git_email_helper/*.txt

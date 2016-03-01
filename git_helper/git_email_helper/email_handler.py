@@ -16,6 +16,7 @@ sys.path.insert(0,parentdir)
 from  rate_results import get_email_result
 
 SURVEY_LINK = 'http://goo.gl/forms/5MU1QUJNou'
+SURVEY_HTML = '<iframe src="https://docs.google.com/a/ncsu.edu/forms/d/17mvD7GpXxPxbPFTSZhv8DAVk4j8vFyl15_SSr7h47ik/viewform?embedded=true" width="760" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>'
 # pip install BeautifulSoup4
 
 def get_message_info(message):

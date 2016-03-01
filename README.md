@@ -24,7 +24,7 @@ An Command line helper based on decsion tree. It can detect git errors in real t
   
       a. [Git helper web](https://github.com/nikign/Git-Helper/issues/63)
 
-      b. [Git helper email]()
+      b. [Git helper email](http://goo.gl/forms/Zk4eVdQDQ4)
       
       c. [Local git helper] (https://github.com/nikign/Git-Helper/blob/master/git_helper/decision_tree/log.csv)
       
