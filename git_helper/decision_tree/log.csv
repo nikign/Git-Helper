@@ -172,3 +172,152 @@ index de01d69,7550a20..0000000
 29 Feb 2016 21:14:35,git branch,True,branch,False,"* master
 ",,
 29 Feb 2016 21:14:44,q,False,,,,,yes
+29 Feb 2016 23:09:34,git pull,True,pull,True,"U	README.md
+U	menu.py
+U	test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+",True,yes
+29 Feb 2016 23:09:41,q,False,,,,,yes
+01 Mar 2016 01:37:57,ls,False,,False,"README.md
+log.csv
+menu.py
+read.txt
+test.py
+",,
+01 Mar 2016 01:38:02,cd ..,False,,False,,,
+01 Mar 2016 01:38:05,cd Conflict,False,,False,,,
+01 Mar 2016 01:38:08,git status,True,status,False,"On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commit each, respectively.
+  (use ""git pull"" to merge the remote branch into yours)
+You have unmerged paths.
+  (fix conflicts and run ""git commit"")
+
+Unmerged paths:
+  (use ""git add <file>..."" to mark resolution)
+
+	both modified:   README.md
+	both modified:   menu.py
+	both modified:   test.py
+
+Untracked files:
+  (use ""git add <file>..."" to include in what will be committed)
+
+	log.csv
+
+no changes added to commit (use ""git add"" and/or ""git commit -a"")
+",,
+01 Mar 2016 01:38:19,clear,False,,False,[H[J,,
+01 Mar 2016 01:38:42,mkdir sample,False,,False,,,
+01 Mar 2016 01:38:43,ls,False,,False,"README.md
+log.csv
+menu.py
+read.txt
+sample
+test.py
+",,
+01 Mar 2016 01:38:49,cd sample,False,,False,,,
+01 Mar 2016 01:39:00,touch sample.txt,False,,False,,,
+01 Mar 2016 01:39:02,ls,False,,False,"sample.txt
+",,
+01 Mar 2016 01:39:07,git status,True,status,False,"On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commit each, respectively.
+  (use ""git pull"" to merge the remote branch into yours)
+You have unmerged paths.
+  (fix conflicts and run ""git commit"")
+
+Unmerged paths:
+  (use ""git add <file>..."" to mark resolution)
+
+	both modified:   ../README.md
+	both modified:   ../menu.py
+	both modified:   ../test.py
+
+Untracked files:
+  (use ""git add <file>..."" to include in what will be committed)
+
+	../log.csv
+	./
+
+no changes added to commit (use ""git add"" and/or ""git commit -a"")
+",,
+01 Mar 2016 01:39:27,cd ..,False,,False,,,
+01 Mar 2016 01:39:28,git status,True,status,False,"On branch master
+Your branch and 'origin/master' have diverged,
+and have 1 and 1 different commit each, respectively.
+  (use ""git pull"" to merge the remote branch into yours)
+You have unmerged paths.
+  (fix conflicts and run ""git commit"")
+
+Unmerged paths:
+  (use ""git add <file>..."" to mark resolution)
+
+	both modified:   README.md
+	both modified:   menu.py
+	both modified:   test.py
+
+Untracked files:
+  (use ""git add <file>..."" to include in what will be committed)
+
+	log.csv
+	sample/
+
+no changes added to commit (use ""git add"" and/or ""git commit -a"")
+",,
+01 Mar 2016 01:39:48,git add sample,True,add,False,,,
+01 Mar 2016 01:40:00,"git commit -m ""added sample""",True,commit,True,"error: commit is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+U	README.md
+U	menu.py
+U	test.py
+fatal: Exiting because of an unresolved conflict.
+",,
+01 Mar 2016 01:40:20,git pull,True,pull,True,"U	README.md
+U	menu.py
+A	sample/sample.txt
+U	test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+",True,yes
+01 Mar 2016 01:44:27,q,False,,,,,yes
+01 Mar 2016 01:47:45,git pull,True,pull,True,"U	README.md
+U	menu.py
+A	sample/sample.txt
+U	test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+",True,yes
+01 Mar 2016 01:49:29,q,False,,,,,yes
+01 Mar 2016 01:49:46,git pull,True,pull,True,"U	README.md
+U	menu.py
+A	sample/sample.txt
+U	test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+",True,yes
+01 Mar 2016 01:50:33,q,False,,,,,no
+01 Mar 2016 01:50:43,git pull,True,pull,True,"U	README.md
+U	menu.py
+A	sample/sample.txt
+U	test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+",True,yes
+01 Mar 2016 01:52:02,q,False,,,,,no
+01 Mar 2016 01:52:07,git pull,True,pull,True,"U	README.md
+U	menu.py
+A	sample/sample.txt
+U	test.py
+Pull is not possible because you have unmerged files.
+Please, fix them up in the work tree, and then use 'git add/rm <file>'
+as appropriate to mark resolution and make a commit.
+",True,yes
+01 Mar 2016 01:53:37,q,False,,,,,yes
