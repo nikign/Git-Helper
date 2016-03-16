@@ -11,14 +11,14 @@ errorKeywordColor = {
 
 exitMessage = ['Thanks for using Git Helper!','See you next time!']
 
-gitHelperLogo = Fore.GREEN + """
+gitHelperLogo = """
    ____ _ _     _   _      _                 
   / ___(_) |_  | | | | ___| |_ __   ___ _ __ 
  | |  _| | __| | |_| |/ _ \ | '_ \ / _ \ '__|
  | |_| | | |_  |  _  |  __/ | |_) |  __/ |   
   \____|_|\__| |_| |_|\___|_| .__/ \___|_|   
                             |_|              
-    """ + Style.RESET_ALL
+    """ 
 
 instruction = ['Please input your commands like you do in bash.', 'Use "q" or "quit" to exit Git Helper.']
 
@@ -30,12 +30,12 @@ noSolutionSolution = ['Copy and paste error message to stackoverflow.com to seek
                         'Copy and past error message to google.com to seek for solution',
                         'Send error message to git_helper@yahoo.com and wait for response']
                         
-solutionLogo = Fore.GREEN + """
+solutionLogo = """
   ___      _      _   _          
  / __| ___| |_  _| |_(_)___ _ _  
  \__ \/ _ \ | || |  _| / _ \ ' \ 
  |___/\___/_|\_,_|\__|_\___/_||_|
-    """ + Style.RESET_ALL
+    """
 
 log = {
     'time': None,

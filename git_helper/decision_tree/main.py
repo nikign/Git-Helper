@@ -101,7 +101,7 @@ def getCommandName(cmd):
 # welcome words
 def greeting():
     print
-    print(constant.gitHelperLogo)
+    print(Fore.GREEN + constant.gitHelperLogo + Style.RESET_ALL)
     for value in constant.instruction:
         print(Fore.GREEN + value + Style.RESET_ALL)
     print
