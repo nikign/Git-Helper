@@ -40,6 +40,7 @@ def main():
         
         #prelogging
         global log
+        
         constant.log['time'] = strftime("%d %b %Y %H:%M:%S", gmtime())
         constant.log['userCmd'] = cmd
         constant.log['isGitCommand'] = isGitCommand(cmd)
@@ -121,7 +122,8 @@ def greeting():
 # reset log
 def resetLog():
     for key in constant.log:
-        constant.log[key] = None
+        constant.log[key] = None       
+    constant.log['tool'] = constant.tool
     return
 
 # check if a command is git command
@@ -206,6 +208,7 @@ def runCdCommand(cmd):
 
 def writeToLog(logWriter):
     lst = []
+    lst.append(constant.log['tool'])
     lst.append(constant.log['time'])
     lst.append(constant.log['userCmd'])
     lst.append(constant.log['isGitCommand'])

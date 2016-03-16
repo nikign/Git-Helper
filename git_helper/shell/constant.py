@@ -38,6 +38,7 @@ solutionLogo = """
     """
 
 log = {
+    'tool': None,
     'time': None,
     'userCmd': None,
     'isGitCommand': None,
@@ -47,3 +48,5 @@ log = {
     'hasSolution': None,
     'isSatisfy': None
 }
+
+tool = 'shell'
