@@ -129,7 +129,7 @@ def providePushSolution(msg):
         printSolution(explanation,command,solution)
         
         #logging
-        constant.log['hasSolution'] = False
+        constant.log['hasSolution'] = hasSolution
     except Exception as e:
         print('Error in providePushSolution():')
         print(e)

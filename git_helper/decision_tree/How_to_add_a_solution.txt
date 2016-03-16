@@ -1,0 +1,7 @@
+Add new solution for new git command:
+1. Add command name and solution provider function to 'solutionAvailableCommands' list in Constant section in solutionProvider.py
+2. Write solution provider function (e.g. providePushSolution(msg)) in Solutions section in solutionProvider.py
+3. Log if there is solution (change the value of constant.log['hasSolution'] to True or False)
+
+Add new solution for existing git command:
+1. Add solution into the if-else structure of a solution provider function
