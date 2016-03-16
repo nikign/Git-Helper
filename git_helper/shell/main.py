@@ -7,7 +7,7 @@ import os
 import csv
 
 import constant
-import solutionProvider
+#import solutionProvider
 
 # init colorama
 init()
@@ -44,7 +44,7 @@ def main():
         constant.log['userCmd'] = cmd
         constant.log['isGitCommand'] = isGitCommand(cmd)
         if (constant.log['isGitCommand']):
-            constant.log['gitCommand'] = solutionProvider.getGitCommandName(cmd)
+            constant.log['gitCommand'] = getGitCommandName(cmd)
         
         #run command      
         if cmd != 'q' and cmd != 'quit':
@@ -55,7 +55,7 @@ def main():
         #write to log file
         writeToLog(logWriter)
         
-    constant.log['isSatisfy'] = solutionProvider.askSatisfaction()    
+    #constant.log['isSatisfy'] = solutionProvider.askSatisfaction()    
     #Write q command log and user satisfaction
     writeToLog(logWriter)
     
@@ -97,6 +97,17 @@ def getCommandName(cmd):
         return cmd
     else:
         return cmd[0:end].lower()
+
+# get git command name from a git command
+def getGitCommandName(cmd):
+    if cmd == 'git':
+        return 'git'
+    rmgit = cmd[cmd.find(' '):].lstrip()
+    end = rmgit.find(' ')
+    if end == -1:
+        return rmgit
+    else:
+        return rmgit[:rmgit.find(' ')]
 
 # welcome words
 def greeting():
@@ -146,8 +157,8 @@ def runCommonCommands(cmd):
     except subprocess.CalledProcessError as e:
         msg = processErrorMessage(e.output)
         print(msg)
-        if isGitCommand(cmd):
-            solutionProvider.provideSolution(cmd, msg)
+        #if isGitCommand(cmd):
+            #solutionProvider.provideSolution(cmd, msg)
         
         #logging
         constant.log['isError'] = True
