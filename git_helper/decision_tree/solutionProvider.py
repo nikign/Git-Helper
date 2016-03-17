@@ -5,6 +5,9 @@ import constant
 ##############################################################
 # Functions
 ##############################################################
+def dimStr(str):
+    return Style.DIM + str + Style.RESET_ALL
+
 # Provide solution with decision tree
 def provideSolution(cmd, msg):
     print(Fore.GREEN + '##############################################################################')
@@ -126,6 +129,40 @@ def provideAddSolution(cmd,msg):
         print(e) 
     return
 
+def provideCheckoutSolution(cmd, msg):
+    explanation = ''
+    solution = []
+    command = []
+    hasSolution = True
+    try:
+        if msg.find('updating paths') >= 0 and msg.find('incompatible') >= 0 and msg.find('switching branches') >= 0:
+            explanation = "This might happens because you have not yet retrieve the remote branch that you want to track to your local machine."
+            command = ["git fetch origin",
+                        "git checkout <branch-name>"]
+            solution = ["Doing " + Style.DIM + command[0] + Style.RESET_ALL + " will retrieve all the remote branch to local machine.",
+                        "Doing " + Style.DIM + command[1] + Style.RESET_ALL + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
+        elif msg.find('pathspec') >= 0 and msg.find('did not match') >= 0:
+            para = msg[msg.find(" '")+len(" '"):msg.find("' ")]
+            explanation = "Checkout command did not find a branch named '" + para + "', either because you accidentally typed the wrong branch name or you didn't retrieve the remote branch to your local machine for tracking."
+            command = ["git fetch origin",
+                        "git checkout <branch-name>"]
+            solution = ["Make sure you got your branch name correct.",
+                        "Doing " + Style.DIM + command[0] + Style.RESET_ALL + " will retrieve all the remote branch to local machine.",
+                        "Doing " + Style.DIM + command[1] + Style.RESET_ALL + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
+        else:
+            explanation = constant.noSolutionMessage
+            solution = constant.noSolutionSolution
+            hasSolution = False
+
+        printSolution(explanation,command,solution)
+        
+        #logging
+        constant.log['hasSolution'] = hasSolution
+    except Exception as e:
+        print('Error in provideCheckoutSolution():')
+        print(e)
+    return
+
 # Provide solution for Push Command
 def providePushSolution(cmd,msg):
     explanation = ''
@@ -238,5 +275,6 @@ def providePullSolution(cmd,msg):
 solutionAvailableCommands = {
     'push': providePushSolution,
     'pull': providePullSolution,
-    'add': provideAddSolution
+    'add': provideAddSolution,
+    'checkout': provideCheckoutSolution
 }
