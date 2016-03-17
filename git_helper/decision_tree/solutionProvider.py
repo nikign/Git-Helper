@@ -14,7 +14,7 @@ def provideSolution(cmd, msg):
     gitcmd = getGitCommandName(cmd)
     
     if solutionAvailableCommands.has_key(gitcmd):
-        solutionAvailableCommands[gitcmd](msg)
+        solutionAvailableCommands[gitcmd](cmd, msg)
         
     else:
         #raise NotImplementedError('solution for other commands has not implemented yet.')
@@ -74,7 +74,7 @@ def printSolution(explanation, command, solution):
         print
         print('\t' + explanation)
         print
-    if command != '':
+    if len(command) > 0:
         print(Fore.GREEN + 'Command:' + Style.RESET_ALL)
         print
         i = 1
@@ -82,7 +82,7 @@ def printSolution(explanation, command, solution):
             print('\t' + str(i) + '. ' + Style.DIM + value + Style.RESET_ALL)
             print
             i += 1
-    if solution != '':
+    if len(solution) > 0:
         print(Fore.GREEN + 'Solution:' + Style.RESET_ALL)
         print
         i = 1
@@ -98,11 +98,39 @@ def printSolution(explanation, command, solution):
 ##############################################################
 # Solutions
 ##############################################################
-# Provide solution for Push Command
-def providePushSolution(msg):
+def provideAddSolution(cmd,msg):
     explanation = ''
-    solution = ''    
-    command = ''
+    solution = []
+    command = []
+    hasSolution = True
+    try:
+        if msg.find('unknown switch') >= 0:
+            para = cmd[cmd.find('add ')+len('add '):]
+            explanation = "The add command could not recognize your parameter '" + para +"'."
+            solution = ["Please try to add quote marks to your parameter."]
+        elif msg.find('ignored by') >= 0 and msg.find('.gitignore') >=0:
+            explanation = "The file you want to add matches the (type of) files listed in your .gitignore file. Git will ignore those files and not add them to stage by default."
+            command = [cmd.replace("add ", "add -f ")]
+            solution = ["You can either use " + Style.DIM + command[0] + Style.RESET_ALL + " to force the file to be added to the stage,",
+                        "Or edit your .gitignore file and remove the name of the file you want to add from .gitignore file."]
+        else:
+            explanation = constant.noSolutionMessage
+            solution = constant.noSolutionSolution
+            hasSolution = False
+        
+        printSolution(explanation,command,solution)
+        #logging
+        constant.log['hasSolution'] = hasSolution
+    except Exception as e:
+        print('Error in provideAddSolution():')
+        print(e) 
+    return
+
+# Provide solution for Push Command
+def providePushSolution(cmd,msg):
+    explanation = ''
+    solution = []    
+    command = []
     hasSolution = True
     try:
         if msg.find('[rejected]') >= 0 and msg.find('failed to push some refs to') >= 0 and (msg.find('(fetch first)') >= 0 or msg.find('(non-fast-forward)') >= 0):
@@ -136,10 +164,10 @@ def providePushSolution(msg):
     return
 
 # Provide solution for Pull Command
-def providePullSolution(msg):
+def providePullSolution(cmd,msg):
     explanation = ''
-    solution = ''    
-    command = ''
+    solution = []    
+    command = []
     hasSolution = True
     try:
         if msg.find('CONFLICT') >= 0 and msg.find('Merge conflict') >= 0 and msg.find('merge failed') >= 0:
@@ -209,5 +237,6 @@ def providePullSolution(msg):
 # Git commands and their solution provider function
 solutionAvailableCommands = {
     'push': providePushSolution,
-    'pull': providePullSolution
+    'pull': providePullSolution,
+    'add': provideAddSolution
 }
