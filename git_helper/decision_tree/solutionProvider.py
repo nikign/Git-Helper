@@ -114,7 +114,7 @@ def provideAddSolution(cmd,msg):
         elif msg.find('ignored by') >= 0 and msg.find('.gitignore') >=0:
             explanation = "The file you want to add matches the (type of) files listed in your .gitignore file. Git will ignore those files and not add them to stage by default."
             command = [cmd.replace("add ", "add -f ")]
-            solution = ["You can either use " + Style.DIM + command[0] + Style.RESET_ALL + " to force the file to be added to the stage,",
+            solution = ["You can either use " + dimStr(command[0]) + " to force the file to be added to the stage,",
                         "Or edit your .gitignore file and remove the name of the file you want to add from .gitignore file."]
         else:
             explanation = constant.noSolutionMessage
@@ -139,16 +139,16 @@ def provideCheckoutSolution(cmd, msg):
             explanation = "This might happens because you have not yet retrieve the remote branch that you want to track to your local machine."
             command = ["git fetch origin",
                         "git checkout <branch-name>"]
-            solution = ["Doing " + Style.DIM + command[0] + Style.RESET_ALL + " will retrieve all the remote branch to local machine.",
-                        "Doing " + Style.DIM + command[1] + Style.RESET_ALL + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
+            solution = ["Doing " + dimStr(command[0]) + " will retrieve all the remote branch to local machine.",
+                        "Doing " + dimStr(command[1]) + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
         elif msg.find('pathspec') >= 0 and msg.find('did not match') >= 0:
             para = msg[msg.find(" '")+len(" '"):msg.find("' ")]
             explanation = "Checkout command did not find a branch named '" + para + "', either because you accidentally typed the wrong branch name or you didn't retrieve the remote branch to your local machine for tracking."
             command = ["git fetch origin",
                         "git checkout <branch-name>"]
             solution = ["Make sure you got your branch name correct.",
-                        "Doing " + Style.DIM + command[0] + Style.RESET_ALL + " will retrieve all the remote branch to local machine.",
-                        "Doing " + Style.DIM + command[1] + Style.RESET_ALL + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
+                        "Doing " + dimStr(command[0]) + " will retrieve all the remote branch to local machine.",
+                        "Doing " + dimStr(command[1]) + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -173,7 +173,7 @@ def providePushSolution(cmd,msg):
         if msg.find('[rejected]') >= 0 and msg.find('failed to push some refs to') >= 0 and (msg.find('(fetch first)') >= 0 or msg.find('(non-fast-forward)') >= 0):
             explanation = 'The remote server has some work that you do not have on your local machine. You can do a git pull command to get the work you do not have locally.'
             command = ['git pull']
-            solution = ["Please use " + Style.DIM + command[0] + Style.RESET_ALL + " command to get the work that you don't have locally."]
+            solution = ["Please use " + dimStr(command[0]) + " command to get the work that you don't have locally."]
         elif msg.find('src refspec') >= 0 and msg.find('does not match any') >= 0:
             begin = msg.find('src refspec') + len('src refspec')
             end = msg.find('does not match any')
@@ -183,9 +183,9 @@ def providePushSolution(cmd,msg):
                         'git commit -m "Your commit message here"', 
                         'git push origin ' + branchName]
             solution = ['Make sure you have at least one file in your repository folder.',
-                        'Use ' + Style.DIM + command[0] + Style.RESET_ALL + ' to add files into this commit. Use "." or "-A" for <file-name> if you want to add all files in the repository to this commit.',
-                        'Use ' + Style.DIM + command[1] + Style.RESET_ALL + ' to commit to local repository.',
-                        'Use ' + Style.DIM + command[2] + Style.RESET_ALL + ' to push your commit to ' + branchName + ' of remote repository.']
+                        'Use ' + dimStr(command[0]) + ' to add files into this commit. Use "." or "-A" for <file-name> if you want to add all files in the repository to this commit.',
+                        'Use ' + dimStr(command[1]) + ' to commit to local repository.',
+                        'Use ' + dimStr(command[2]) + ' to push your commit to ' + branchName + ' of remote repository.']
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -222,9 +222,9 @@ def providePullSolution(cmd,msg):
             solution = ['Open one of following conflict files:\n\n' + conflictFilesStr,
                         'Remove conflict markers ("<<<<<<",">>>>>>","======") in the file along with the part of code you do not want.',
                         'Repeat previous steps till all conflicts in files are resolved',
-                        'Use ' + Style.DIM + command[0] + Style.RESET_ALL + ' to add revised files into this commit.',
-                        'Use ' + Style.DIM + command[1] + Style.RESET_ALL + ' to commit to local repository.',
-                        'Use ' + Style.DIM + command[2] + Style.RESET_ALL + ' to push your commit to remote repository.']
+                        'Use ' + dimStr(command[0]) + ' to add revised files into this commit.',
+                        'Use ' + dimStr(command[1]) + ' to commit to local repository.',
+                        'Use ' + dimStr(command[2]) + ' to push your commit to remote repository.']
         elif msg.find('not possible') >= 0 and msg.find('unmerged files') >= 0:
             conflictFiles = getUnmergedFiles(msg, 'unmerged')
             conflictFilesStr = ''
@@ -246,14 +246,14 @@ def providePullSolution(cmd,msg):
                         '',
                         'Remove conflict markers ("<<<<<<",">>>>>>","======") in the file along with the part of code that you do not want.',
                         'Repeat previous steps till all conflicts in files are resolved',
-                        'Use ' + Style.DIM + command[0] + Style.RESET_ALL + ' to add revised files into this commit.',
-                        'Use ' + Style.DIM + command[1] + Style.RESET_ALL + ' to commit to local repository.',
-                        'Use ' + Style.DIM + command[2] + Style.RESET_ALL + ' to push your commit to remote repository.',
+                        'Use ' + dimStr(command[0]) + ' to add revised files into this commit.',
+                        'Use ' + dimStr(command[1]) + ' to commit to local repository.',
+                        'Use ' + dimStr(command[2]) + ' to push your commit to remote repository.',
                         '',
-                        'Use ' + Style.DIM + command[4] + Style.RESET_ALL + ' to reset unmerged files.',
-                        'Use ' + Style.DIM + command[0] + Style.RESET_ALL + ' to re-add unmerged files into this commit.',
-                        'Use ' + Style.DIM + command[1] + Style.RESET_ALL + ' to commit to local repository.',
-                        'Use ' + Style.DIM + command[2] + Style.RESET_ALL + ' to push your commit to remote repository.',
+                        'Use ' + dimStr(command[4]) + ' to reset unmerged files.',
+                        'Use ' + dimStr(command[0]) + ' to re-add unmerged files into this commit.',
+                        'Use ' + dimStr(command[1]) +' to commit to local repository.',
+                        'Use ' + dimStr(command[2]) + ' to push your commit to remote repository.',
                         ]
         else:
             explanation = constant.noSolutionMessage
