@@ -163,6 +163,57 @@ def provideCheckoutSolution(cmd, msg):
         print(e)
     return
 
+def provideCommitSolution(cmd, msg):
+    explanation = ''
+    solution = []    
+    command = []
+    hasSolution = True
+    try:
+        if msg.find('pathspec') >= 0 and msg.find('did not match') >= 0:
+            explanation = 'The commit command does not know which part is your commit message.'
+            solution = ['Try to add quote mark ("") to your commit message.']
+        elif msg.find('partial commit') >= 0 and msg.find('merge') >= 0:
+            explanation = 'Somehow git failed to add all the conflict files in this commit.'
+            command = ['git add <conflict-file-name>',
+                        'git status',
+                        'git commit -im "commit message"',
+                        'git commit -am "commit message"']
+            solution = ["Please make sure that you have added all the conflict file before you commit using " + dimStr(command[0]) + ". Use " + dimStr(command[1]) + " to see which files you need to add.",
+                        "If previous step doesn't work, use " + dimStr(command[2]) + " to commit your work. The '-i' option will include all the changes within the working directory.",
+                        "If previous step doesn't work, use " + dimStr(command[3]) + " to commit your work. The '-a' option will include all the changes within the local repository."]
+        elif msg.find('unmerged file') >= 0 and msg.find('unresolved conflict') >= 0:
+            conflictFiles = getUnmergedFiles(msg, 'unmerged')
+            conflictFilesStr = ''
+            for value in conflictFiles:
+                conflictFilesStr = conflictFilesStr + '\t\t' + value + '\n'
+                
+            explanation = """This error occurs when there are unmerged files in your repository, which is most likely caused by conflict.
+            
+        A conflict happens when two branches have changed the same part of the same file, and then those branches are merged together. For example, if you make a change on a particular line in a file, and your colleague working in a repository makes a change on the exact same line, a merge conflict occurs. Git has trouble understanding which change should be used, so it asks you to help out.
+            
+        When you open a conflict file, you will see symbols like "<<<<<<", "=======" and ">>>>>>". These are called conflict markers. The conflict parts are between conflict marker "<<<<<<" and ">>>>>>" divided by conflict marker "======"."""
+            command = ['git add <unmerged-file-names>', 
+                        'git commit -m "Your commit message here"']
+            solution = ['Open one of following unmerged files:\n\n' + conflictFilesStr,
+                        'Look for conflict markers ("<<<<<<",">>>>>>","======") in the file.',
+                        'Remove conflict markers ("<<<<<<",">>>>>>","======") in the file along with the part of code that you do not want.',
+                        'Repeat previous steps till all conflicts in files are resolved',
+                        'Use ' + dimStr(command[0]) + ' to add revised files into this commit.',
+                        'Use ' + dimStr(command[1]) + ' to commit to local repository.']
+        else:
+            explanation = constant.noSolutionMessage
+            solution = constant.noSolutionSolution
+            hasSolution = False
+
+        printSolution(explanation,command,solution)
+        
+        #logging
+        constant.log['hasSolution'] = hasSolution
+    except Exception as e:
+        print('Error in provideCommitSolution():')
+        print(e)
+    return
+
 # Provide solution for Push Command
 def providePushSolution(cmd,msg):
     explanation = ''
@@ -276,5 +327,6 @@ solutionAvailableCommands = {
     'push': providePushSolution,
     'pull': providePullSolution,
     'add': provideAddSolution,
-    'checkout': provideCheckoutSolution
+    'checkout': provideCheckoutSolution,
+    'commit': provideCommitSolution
 }
