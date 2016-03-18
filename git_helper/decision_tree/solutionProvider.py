@@ -214,6 +214,49 @@ def provideCommitSolution(cmd, msg):
         print(e)
     return
 
+
+def provideMergeSolution(cmd, msg):
+    explanation = ''
+    solution = []    
+    command = []
+    hasSolution = True
+    try:
+        if msg.find('overwritten by merge') >= 0:
+            explanation = 'This happens when you have edits on your local repository that have not been committed yet. If you do a merge, you local changes will be overwritten by the merge. In other word, your curent work will be lost.'
+            command = ['git commit -m "Your commit message here"',
+                        cmd]
+            solution = ['Use ' + dimStr(command[0]) + ' to commit your changes first.',
+                        'Use ' + dimStr(command[1]) + ' to merge branch.']
+        elif msg.find('Merge conflict in') >= 0:
+            conflictFiles = getUnmergedFiles(msg, 'conflict')
+            conflictFilesStr = ''
+            for value in conflictFiles:
+                conflictFilesStr = conflictFilesStr + '\t\t' + value + '\n'
+                
+            explanation = """You need to fix and commit your conflicted file before you can do a merge. A conflict happens when two branches have changed the same part of the same file, and then those branches are merged together. For example, if you make a change on a particular line in a file, and your colleague working in a repository makes a change on the exact same line, a merge conflict occurs. Git has trouble understanding which change should be used, so it asks you to help out.
+            
+        When you open a conflict file, you will see symbols like "<<<<<<", "=======" and ">>>>>>". These are called conflict markers. The conflict parts are between conflict marker "<<<<<<" and ">>>>>>" divided by conflict marker "======"."""
+            command = ['git add <conflict-file-names>', 
+                        'git commit -m "Your commit message here"']
+            solution = ['Open one of following conflict files:\n\n' + conflictFilesStr,
+                        'Remove conflict markers ("<<<<<<",">>>>>>","======") in the file along with the part of code you do not want.',
+                        'Repeat previous steps till all conflicts in files are resolved',
+                        'Use ' + dimStr(command[0]) + ' to add revised files into this commit.',
+                        'Use ' + dimStr(command[1]) + ' to commit to local repository.']
+        else:
+            explanation = constant.noSolutionMessage
+            solution = constant.noSolutionSolution
+            hasSolution = False
+
+        printSolution(explanation,command,solution)
+        
+        #logging
+        constant.log['hasSolution'] = hasSolution
+    except Exception as e:
+        print('Error in providePushSolution():')
+        print(e)
+    return
+    
 # Provide solution for Push Command
 def providePushSolution(cmd,msg):
     explanation = ''
