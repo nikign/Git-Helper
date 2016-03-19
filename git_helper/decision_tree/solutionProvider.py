@@ -60,14 +60,12 @@ def getUnmergedFiles(msg,type):
 
 # get git command name from a git command
 def getGitCommandName(cmd):
-    if cmd == 'git':
-        return 'git'
-    rmgit = cmd[cmd.find(' '):].lstrip()
-    end = rmgit.find(' ')
-    if end == -1:
-        return rmgit
+    if len(cmd) == 0:
+        return ''
+    if len(cmd) == 1:
+        return cmd[0]
     else:
-        return rmgit[:rmgit.find(' ')]
+        return cmd[1]
    
 # Print formated solution
 # explanation: str; command: list; solution: list
