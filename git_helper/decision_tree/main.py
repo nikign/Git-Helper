@@ -14,7 +14,7 @@ init()
 
 # main entry
 def main():
-    os.chdir('/Users/BARNES_1/git/Conflict')
+    #os.chdir('/Users/BARNES_1/git/Conflict')
 
     greeting()
     
@@ -35,7 +35,7 @@ def main():
     #Start loop
     while True:
         resetLog()  
-              
+        
         cmd = splitCommand(getCommand())
         
         #prelogging
