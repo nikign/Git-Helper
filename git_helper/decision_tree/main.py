@@ -14,7 +14,7 @@ init()
 
 # main entry
 def main():
-    os.chdir('E:\\Courses\\CSC 510\\Conflict')
+    os.chdir('/Users/BARNES_1/git/Conflict')
 
     greeting()
     
