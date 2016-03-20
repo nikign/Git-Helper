@@ -15,9 +15,9 @@ def google_search_engine(query):
     QueryStackover = 'site:stackoverflow.com %s' % query
     #print QueryStackover
     count = 0
-    for url in search(QueryStackover, tld='com', lang='en', stop=20,pause=0.2):
+    for url in search(QueryStackover, tld='com', lang='en', stop=500,pause=5.0):
         count = count + 1
-        if count%1000 == 0:
+        if count%100 == 0:
             print("crawl: "+ str(count))
         Links.append(url)
     print("Finish Crawl Web")
