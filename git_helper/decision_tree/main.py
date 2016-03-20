@@ -167,12 +167,13 @@ def runSpecialCommand(cmd):
 
 def runCdCommand(cmd):
     global log
-
-    begin = cmd.find(' ')
-    if begin == -1:
-        runCommonCommands(cmd)
+    
+    if len(cmd) == 0:
+        return
+    elif len(cmd) == 1:
+        runCommonCommands(cmd[0])
     else:
-        cmdBody = cmd[begin+1:]
+        cmdBody = cmd[1]
         try:
             os.chdir(cmdBody)
             
