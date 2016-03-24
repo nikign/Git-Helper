@@ -21,7 +21,7 @@ def provideSolution(cmd, msg):
         
     else:
         #raise NotImplementedError('solution for other commands has not implemented yet.')
-        print('Sorry, solution for ' + cmd + ' command is not available.\n')
+        print('Sorry, solution for ' + combineCmd(cmd) + ' command is not available.\n')
     print(Fore.GREEN + '##############################################################################')
     print('Solution Ended')
     print('##############################################################################' + Style.RESET_ALL)
@@ -38,6 +38,14 @@ def askSatisfaction():
         reply = raw_input('Are you satisfied with the solution? (yes/no): ')
     return reply
 
+def combineCmd(cmd):
+    if len(cmd) == 0:
+        return ''
+    else:
+        ccmd = ''
+        for value in cmd:
+            ccmd = ccmd + value + ' '
+        return ccmd
 
 # Get conflict/unmerged file list from two types of conflict messages
 def getUnmergedFiles(msg,type):
@@ -60,14 +68,12 @@ def getUnmergedFiles(msg,type):
 
 # get git command name from a git command
 def getGitCommandName(cmd):
-    if cmd == 'git':
-        return 'git'
-    rmgit = cmd[cmd.find(' '):].lstrip()
-    end = rmgit.find(' ')
-    if end == -1:
-        return rmgit
+    if len(cmd) == 0:
+        return ''
+    if len(cmd) == 1:
+        return cmd[0]
     else:
-        return rmgit[:rmgit.find(' ')]
+        return cmd[1]
    
 # Print formated solution
 # explanation: str; command: list; solution: list
@@ -108,8 +114,7 @@ def provideAddSolution(cmd,msg):
     hasSolution = True
     try:
         if msg.find('unknown switch') >= 0:
-            para = cmd[cmd.find('add ')+len('add '):]
-            explanation = "The add command could not recognize your parameter '" + para +"'."
+            explanation = "The add command could not recognize your parameter."
             solution = ["Please try to add quote marks to your parameter."]
         elif msg.find('ignored by') >= 0 and msg.find('.gitignore') >=0:
             explanation = "The file you want to add matches the (type of) files listed in your .gitignore file. Git will ignore those files and not add them to stage by default."
@@ -224,7 +229,7 @@ def provideMergeSolution(cmd, msg):
         if msg.find('overwritten by merge') >= 0:
             explanation = 'This happens when you have edits on your local repository that have not been committed yet. If you do a merge, you local changes will be overwritten by the merge. In other word, your curent work will be lost.'
             command = ['git commit -m "Your commit message here"',
-                        cmd]
+                        combineCmd(cmd)]
             solution = ['Use ' + dimStr(command[0]) + ' to commit your changes first.',
                         'Use ' + dimStr(command[1]) + ' to merge branch.']
         elif msg.find('Merge conflict in') >= 0:

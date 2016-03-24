@@ -14,7 +14,7 @@ init()
 
 # main entry
 def main():
-    os.chdir('E:\\Courses\\CSC 510\\Conflict')
+    #os.chdir('/Users/BARNES_1/git/Conflict')
 
     greeting()
     
@@ -36,7 +36,7 @@ def main():
     while True:
         resetLog()  
               
-        cmd = getCommand().lstrip().rstrip()
+        cmd = splitCommand(getCommand())
         
         #prelogging
         global log
@@ -48,7 +48,9 @@ def main():
             constant.log['gitCommand'] = getGitCommandName(cmd)
         
         #run command      
-        if cmd != 'q' and cmd != 'quit':
+        if len(cmd) == 0:
+            continue      
+        elif cmd[0] != 'q' and cmd[0] != 'quit':
             runCommand(cmd)
         else:
             break
@@ -93,22 +95,16 @@ def getCommand():
 
 # get command name from a command
 def getCommandName(cmd):
-    end = cmd.find(' ');
-    if end == -1:
-        return cmd
-    else:
-        return cmd[0:end].lower()
+    return cmd[0].lstrip().rstrip()
 
 # get git command name from a git command
 def getGitCommandName(cmd):
-    if cmd == 'git':
-        return 'git'
-    rmgit = cmd[cmd.find(' '):].lstrip()
-    end = rmgit.find(' ')
-    if end == -1:
-        return rmgit
+    if len(cmd) == 0:
+        return ''
+    if len(cmd) == 1:
+        return cmd[0]
     else:
-        return rmgit[:rmgit.find(' ')]
+        return cmd[1]
 
 # welcome words
 def greeting():
@@ -128,7 +124,7 @@ def resetLog():
 
 # check if a command is git command
 def isGitCommand(cmd):
-    return cmd.find('git') == 0
+    return cmd[0].lstrip().rstrip() == 'git'
 
 # check if is special command that can't run by subprocess.check_output()
 def isSpecialCommand(cmd):
@@ -182,11 +178,12 @@ def runSpecialCommand(cmd):
 def runCdCommand(cmd):
     global log
 
-    begin = cmd.find(' ')
-    if begin == -1:
-        runCommonCommands(cmd)
+    if len(cmd) == 0:
+        return
+    elif len(cmd) == 1:
+        runCommonCommands(cmd[0])
     else:
-        cmdBody = cmd[begin+1:]
+        cmdBody = cmd[1]
         try:
             os.chdir(cmdBody)
             
@@ -205,6 +202,38 @@ def runCdCommand(cmd):
             constant.log['isError'] = True
             constant.log['result'] = str(e)
     return
+
+#splitCommand into a list
+def splitCommand(cmd):
+    cmd = cmd.lstrip().rstrip()
+    
+    if len(cmd) == 0:
+        return []
+    
+    scmd = cmd.split(' ')
+    
+    message = ''
+    quoteType = ''
+    nscmd = []
+    
+    for value in scmd:
+        if value == '':
+            continue
+        if quoteType == '':
+            if value[0] == '"':
+                quoteType = '"'
+                message = message + value + ' '
+            elif value[0] == "'":
+                quoteType = "'"
+                message = message + value + ' '
+            else:
+                nscmd.append(value)
+        else:
+            message = message + value + ' '
+    if message != '':
+        nscmd.append(message)
+        
+    return nscmd
 
 def writeToLog(logWriter):
     lst = []
