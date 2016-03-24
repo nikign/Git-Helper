@@ -14,10 +14,11 @@ init()
 
 # main entry
 def main():
-    #os.chdir('/Users/BARNES_1/git/Conflict')
-    os.chdir('E:\Courses\CSC 510\Conflict')
+    os.chdir('/Users/BARNES_1/git/Conflict')
+    #os.chdir('E:\Courses\CSC 510\Conflict')
 
     greeting()
+    askIdentification()
     
     logFile = None
     logWriter = None
@@ -69,6 +70,18 @@ def main():
 ###########################################
 # FUNCTIONS
 ###########################################
+
+def askIdentification():
+    id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    while (id != 'A' and id != 'B'):
+        print("Please input 'A' or 'B' for the question.")
+        id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    
+    if (id == 'A'):
+        constant.logFilePath = 'A-' + constant.tool + '-' + constant.logFilePath
+    else:
+        constant.logFilePath = 'B-' + constant.tool + '-' + constant.logFilePath
+    return
 
 # display exit message
 def exitMessage():
