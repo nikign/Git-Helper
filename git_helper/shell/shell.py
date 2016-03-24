@@ -15,8 +15,13 @@ init()
 # main entry
 def main():
     #os.chdir('/Users/BARNES_1/git/Conflict')
-
+    
+    #Set tool name according to command line parameter
+    if len(sys.argv) > 1:
+        constant.tool = sys.argv[1]
+    
     greeting()
+    askIdentification()
     
     logFile = None
     logWriter = None
@@ -69,6 +74,18 @@ def main():
 ###########################################
 # FUNCTIONS
 ###########################################
+# ask about user identification, e.g. member role (A or B)
+def askIdentification():
+    id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    while (id != 'A' and id != 'B'):
+        print("Please input 'A' or 'B' for the question.")
+        id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    
+    if (id == 'A'):
+        constant.logFilePath = 'A-' + constant.tool + '-' + constant.logFilePath
+    else:
+        constant.logFilePath = 'B-' + constant.tool + '-' + constant.logFilePath
+    return
 
 # display exit message
 def exitMessage():

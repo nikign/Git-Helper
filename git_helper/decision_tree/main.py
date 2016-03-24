@@ -70,7 +70,7 @@ def main():
 ###########################################
 # FUNCTIONS
 ###########################################
-
+# ask about user identification, e.g. member role (A or B)
 def askIdentification():
     id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
     while (id != 'A' and id != 'B'):
