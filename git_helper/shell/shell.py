@@ -20,6 +20,8 @@ def main():
     if len(sys.argv) > 1:
         constant.tool = sys.argv[1]
     
+    print(constant.toolInstruction['shell'])
+    
     greeting()
     askIdentification()
     
@@ -172,8 +174,8 @@ def runCommonCommands(cmd):
     except subprocess.CalledProcessError as e:
         msg = processErrorMessage(e.output)
         print(msg)
-        #if isGitCommand(cmd):
-            #solutionProvider.provideSolution(cmd, msg)
+        
+        showToolInstruction()
         
         #logging
         constant.log['isError'] = True
@@ -218,6 +220,26 @@ def runCdCommand(cmd):
             #logging
             constant.log['isError'] = True
             constant.log['result'] = str(e)
+    return
+
+#display tool instruction
+def showToolInstruction():
+    instruction = []
+    
+    if constant.tool in constant.toolInstruction:
+        instruction = constant.toolInstruction[constant.tool]
+    else:
+        instruction = constant.toolInstruction['shell']
+    
+    print(Fore.GREEN + "*****************************" + Style.RESET_ALL)
+    print(Fore.GREEN + "* Helper Tool Instructions: *" + Style.RESET_ALL)
+    print(Fore.GREEN + "*****************************" + Style.RESET_ALL)
+    print
+    i = 1
+    for item in instruction:
+        print(str(i) + ". " + item)
+        i = i+1
+    print
     return
 
 #splitCommand into a list

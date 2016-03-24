@@ -1,0 +1,8 @@
+tool,time,userCmd,isGitCommand,gitCommand,isError,result,hasSolution,isSatisfy
+shell,24 Mar 2016 19:59:26,['quit'],False,,,,,
+shell,24 Mar 2016 20:10:49,"['git', 'cc']",True,cc,True,"git: 'cc' is not a git command. See 'git --help'.
+
+Did you mean this?
+	gc
+",,
+shell,24 Mar 2016 20:14:55,['quit'],False,,,,,

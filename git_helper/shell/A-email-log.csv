@@ -14,3 +14,27 @@ email,24 Mar 2016 19:33:45,"['git', 'status']",True,status,False,"# On branch de
 no changes added to commit (use ""git add"" and/or ""git commit -a"")
 ",,
 email,24 Mar 2016 19:33:51,['quit'],False,,,,,
+email,24 Mar 2016 20:10:11,"['git', 'cc']",True,cc,True,"git: 'cc' is not a git command. See 'git --help'.
+
+Did you mean this?
+	gc
+",,
+email,24 Mar 2016 20:10:21,['quit'],False,,,,,
+email,24 Mar 2016 20:10:35,"['git', 'cc']",True,cc,True,"git: 'cc' is not a git command. See 'git --help'.
+
+Did you mean this?
+	gc
+",,
+email,24 Mar 2016 20:10:41,['quit'],False,,,,,
+email,24 Mar 2016 20:15:12,"['git', 'cc']",True,cc,True,"git: 'cc' is not a git command. See 'git --help'.
+
+Did you mean this?
+	gc
+",,
+email,24 Mar 2016 20:16:50,['quit'],False,,,,,
+email,24 Mar 2016 20:16:56,"['git', 'hel']",True,hel,True,"git: 'hel' is not a git command. See 'git --help'.
+
+Did you mean this?
+	help
+",,
+email,24 Mar 2016 20:17:23,['quit'],False,,,,,

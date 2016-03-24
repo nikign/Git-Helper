@@ -49,4 +49,14 @@ log = {
     'isSatisfy': None
 }
 
+shellInstruction = ["shell Instruction", "hello world"]
+emailInstruction = ["mail Instruction", "hello world"]
+searchInstruction = ["search engine instruction", "hello world"]
+
+toolInstruction = {
+    'shell': shellInstruction,
+    'email': emailInstruction,
+    'search': searchInstruction
+}
+
 tool = 'shell'
