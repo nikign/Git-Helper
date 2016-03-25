@@ -51,12 +51,14 @@ log = {
 
 shellInstruction = ["shell Instruction", "hello world"]
 emailInstruction = ["mail Instruction", "hello world"]
-searchInstruction = ["search engine instruction", "hello world"]
+searchEngineInstruction = ["search engine instruction", "hello world"]
+decisionTreeInstruction = []
 
 toolInstruction = {
     'shell': shellInstruction,
     'email': emailInstruction,
-    'search': searchInstruction
+    'search_engine': searchEngineInstruction,
+    'decision_tree': decisionTreeInstruction
 }
 
 tool = 'shell'
