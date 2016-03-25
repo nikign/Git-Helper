@@ -70,17 +70,40 @@ def main():
 ###########################################
 # FUNCTIONS
 ###########################################
+# Ask if the user is member A or member B in the group 
+def askGroupRole():
+    groupRole = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    while (groupRole != 'A' and groupRole != 'B'):
+        print("Please input 'A' or 'B' for the question.")
+        groupRole = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    return groupRole
+
+# Ask the number identificaiton assigned to the group
+def askGroupNumber():
+    groupNumber = -1
+    while True:
+        try:
+            stringNumber = raw_input("What is the group number assigned to your team?: ")
+            groupNumber = int(stringNumber)
+            if (groupNumber <= 40 and groupNumber >= 1):
+                break
+            else:
+                print("Your input is not valid. Please try again.")
+                print
+        except ValueError as e:
+            print("Your input is not valid. Please try again.")
+            print
+    return groupNumber
+
 # ask about user identification, e.g. member role (A or B)
 def askIdentification():
-    id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
-    while (id != 'A' and id != 'B'):
-        print("Please input 'A' or 'B' for the question.")
-        id = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    groupNumber = askGroupNumber()
+    groupRole = askGroupRole()
     
-    if (id == 'A'):
-        constant.logFilePath = 'A-' + constant.tool + '-' + constant.logFilePath
+    if (groupRole == 'A'):
+        constant.logFilePath = str(groupNumber) + '-A-' + constant.tool + '-' + constant.logFilePath
     else:
-        constant.logFilePath = 'B-' + constant.tool + '-' + constant.logFilePath
+        constant.logFilePath = str(groupNumber) + '-B-' + constant.tool + '-' + constant.logFilePath
     return
 
 # display exit message
