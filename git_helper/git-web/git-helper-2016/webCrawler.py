@@ -15,7 +15,7 @@ def google_search_engine(query):
     QueryStackover = 'site:stackoverflow.com %s' % query
     #print QueryStackover
     count = 0
-    for url in search(QueryStackover, tld='com', lang='en', stop=500,pause=5.0):
+    for url in search(QueryStackover, tld='com', lang='en', stop=400,pause=5.0):
         count = count + 1
         if count%100 == 0:
             print("crawl: "+ str(count))
@@ -31,7 +31,7 @@ def get_content_link():
     return Result
 
 def get_web_detail():
-    Query = "git error"
+    Query = "git commit error"
     Links = google_search_engine(Query)
     [Links_RemoveEmpty, QuestionVotes, QuesionContent, AnswerContent, WebResult] = scrape_web_content(Links)
     return [Links_RemoveEmpty, QuestionVotes, QuesionContent, AnswerContent, WebResult]
