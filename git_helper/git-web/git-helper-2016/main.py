@@ -20,6 +20,7 @@ import webapp2
 import jinja2
 import csv
 import logging
+import string
 
 import sys
 sys.path.insert(0, 'libs')
@@ -48,8 +49,11 @@ class MainPage(Handler):
         self.render("index.html")
     def post(self):
         key = self.request.get('key')
+        saveKey = key
+        for char in string.punctuation:
+            key = key.replace(char, ' ')
         res = self.getResults(key)
-        if key:
+        if key and res:
             resLog = GetResultLog(startTime = datetime.datetime.now(), errorMessage = key)
             #TODO: deal with unicode characters
             #key = key.encode('ascii','ignore')
@@ -60,7 +64,7 @@ class MainPage(Handler):
 
 
         #print res
-        self.render("result.html",result = res,key=key)
+        self.render("result.html",result = res,key=saveKey)
 
     def getResults(self,key=None):
         try:
