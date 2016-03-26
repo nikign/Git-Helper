@@ -27,7 +27,7 @@ def google_search_engine(query):
     Links = []
     QueryStackover = 'site:stackoverflow.com %s' % query
     #print QueryStackover
-    for url in search(QueryStackover, tld='es', lang='es', stop=1):
+    for url in search(QueryStackover, tld='com', lang='en', stop=1, pause = 0.12):
         Links.append(url)
     return Links
 
