@@ -3,7 +3,7 @@ __author__ = 'linting'
 import TFIDF_cal as SortUtils
 import pandas as pd
 import pickle
-import googleserach
+import googlesearch
 import os
 
 
@@ -47,8 +47,8 @@ def main_searchDB_web(Query):
 def main_searchDB_email(Query,path):
 
     ResultLink = main_search(Query,EmailQuery = True,Path=path)
-    PageContent = googleserach.scrape_webs_dumpfile(ResultLink)
-    [QuestionDic, AnsList] = googleserach.scrape_web(PageContent)
+    PageContent = googlesearch.scrape_webs_dumpfile(ResultLink)
+    [QuestionDic, AnsList] = googlesearch.scrape_web(PageContent)
     EmailResult = AnsList
 
     return EmailResult
