@@ -7,6 +7,7 @@ from email.mime.message import MIMEMessage
 import poplib
 import smtplib
 import time
+import traceback
 
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -55,7 +56,7 @@ class EmailHandler:
     pop_conn = None
     mail_server = None
     emails_answered = 0
-    email_record_file = 'git_email_helper/last_answered_email.txt'
+    email_record_file = 'last_answered_email.txt'
 
     def record_answered_mails(self):
         with open(self.email_record_file, 'w') as out:
@@ -91,11 +92,14 @@ class EmailHandler:
         self.pop_conn = pop_conn
         self.mail_server = mail_server
 
-    def create_mail_body(self, question, answer, link_to_page, link_to_survey):
-        mail_body = ('Hi,<br> This question and its top answer seem close to your problem.<br>'+\
-            'Question:<br>%s<br> Top Answer:<br>%s<br> You can view the complete conversation in this link:<br>%s<br>'+\
-            ' To help us improve this tool, please take a minute to complete this survey:<br>'+\
-            '%s<br> Thanks,<br>The Git_Helper Team') %(str(question), str(answer), link_to_page, link_to_survey)
+    def create_mail_body(self, error, question, answer, link_to_page):
+        if not error:
+            mail_body = ('Hi,<br> This question and its top answer seem close to your problem.<br>'+\
+                'Question:<br>%s<br> Top Answer:<br>%s<br> You can view the complete conversation in this link:<br>%s<br>'+\
+                ' To help us improve this tool, please take a minute to complete this survey:<br>'+\
+                '%s<br> Thanks,<br>The Git_Helper Team') %(str(question), str(answer), link_to_page, SURVEY_LINK)
+        else:
+            mail_body = "Hi!<br>We couldn't find a result for the error you sent us. Can you make sure you have copied the error message correctly?"
         return mail_body
 
     def check_mail(self):
@@ -111,22 +115,31 @@ class EmailHandler:
                         msg = self.pop_conn.retr(i+1)[1] # new statement
                         msg_text = get_message_text(msg)
                         msg_text = covert_html_to_text(msg_text)
-                        question, answer, link = get_email_result(msg_text)
-                        answer = answer[0]['html_text']
-                        question = question['html_text']
-                        msg_response = self.create_mail_body(question, answer, link, SURVEY_LINK)
+                        try:
+                            question, answer, link = get_email_result(msg_text)
+                            answer = answer[0]['html_text']
+                            question = question['html_text']
+                            msg_response = self.create_mail_body(False, question, answer, link)
+                        except Exception:
+                            traceback.print_exc()
+                            msg_response = self.create_mail_body(True, None, None, None)
+                            
+                        # question, answer, link = 'Q1', 'A1', 'l1'
+                        # print 'ans: %s, que: %s' %(str(answer), str(question))
                         msg_id, sender, subj = get_message_info(msg)
                         self.send_mail(msg_id, sender, subj, msg_response)
                     except Exception as e: # email can't be parsed or sent, still mark it as answered
                         print e
+                        traceback.print_exc()
                         print "error replying msg:" #% msg_id
                 self.emails_answered = numMessages
                 if should_record:
                     print 'recording messages'
                     self.record_answered_mails()
-                time.sleep(60)
+                time.sleep(20)
             except Exception as e: # inactivity timeout, connect again
                 print e
+                traceback.print_exc()
                 self.connect()
 
         self.pop_conn.quit()
