@@ -101,7 +101,6 @@ class BaseDocumentManager(object):
 
   @classmethod
   def add(cls, documents):
-    """wrapper for search index add method; specifies the index name."""
     try:
       return cls.getIndex().put(documents)
     except search.Error:

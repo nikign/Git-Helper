@@ -23,12 +23,13 @@ class tfidf:
     for w in list_of_words:
       doc_dict[w] = doc_dict.get(w, 0.) + 1.0
       self.corpus_dict[w] = self.corpus_dict.get(w, 0.0) + 1.0
-
+    #print "self.corpus_dict", self.corpus_dict
     # normalizing the dictionary
     length = float(len(list_of_words))
     for k in doc_dict:
       doc_dict[k] = doc_dict[k] / length
 
+    #print "doc_dict", doc_dict
     # add the normalized document to the corpus
     self.documents.append([doc_name, doc_dict])
 
@@ -52,7 +53,8 @@ class tfidf:
       doc_dict = doc[1]
       for k in query_dict:
         if doc_dict.has_key(k):
-          score += (query_dict[k] / self.corpus_dict[k]) + (doc_dict[k] / self.corpus_dict[k])
+            score += (query_dict[k] / self.corpus_dict[k]) + (doc_dict[k] / self.corpus_dict[k])
       sims.append([doc[0], score])
 
     return sims
+
