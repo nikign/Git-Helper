@@ -49,6 +49,6 @@ def main_searchDB_email(Query,path):
     ResultLink = main_search(Query,EmailQuery = True,Path=path)
     PageContent = googlesearch.scrape_webs_dumpfile(ResultLink)
     [QuestionDic, AnsList] = googlesearch.scrape_web(PageContent)
-    EmailResult = AnsList
+    EmailResult = QuestionDic, AnsList, ResultLink
 
     return EmailResult

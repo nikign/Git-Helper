@@ -5,7 +5,7 @@ from GoogleSearch.DB_Search import main_searchDB_web
 from GoogleSearch.DB_Search import main_searchDB_email
 
 #Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
-path = "/Users/linting/Desktop/510project/Git-Helper/git_helper/GoogleSearch"
+path = "/Users/BARNES_3/Documents/niki/SE-16/git_helper/"
 
 
 def get_web_results(search_phrase):
@@ -14,8 +14,10 @@ def get_web_results(search_phrase):
     return result
 
 def get_email_result(error_message):
-    #res = main_searchDB_email(error_message,path)
-    res = main_search_email(error_message)
+    res = main_searchDB_email(error_message,path)
+    # res = main_search_email(error_message)
+    print 'outside !!!!!!!!!!!!!!!!!!!!!!!!!'
+    # res = 'q', 'a', 'l'
     return res
 
 #print get_email_result(Query)
