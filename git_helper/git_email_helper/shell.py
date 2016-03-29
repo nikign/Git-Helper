@@ -1,10 +1,17 @@
 import subprocess
+import os
+import sys
 
 try:
     toolName = "email"
-    shellPath = "../shell/shell.py"
     
-    subprocess.call(["python " + shellPath + " " + toolName],shell=True)
+    shellPath =os.path.join("..","shell","shell.py")
+    filepath = "python " + shellPath + " " + toolName
+    
+    if sys.platform.startswith("win32"):
+        subprocess.call(["python",shellPath,toolName],shell=True)
+    else:
+        subprocess.call([filepath],shell=True)
 except Exception as e:
     print("An error occurred in the system: ")
     print(e)
