@@ -4,9 +4,9 @@ from GoogleSearch.googlesearch import main_search_email
 from GoogleSearch.DB_Search import main_searchDB_web
 from GoogleSearch.DB_Search import main_searchDB_email
 
+Query  = "error: failed to push some refs to 'https://github.com/YihuanDong/Group-2.git"
+path = "/Users/linting/Desktop/510project/Git-Helper/git_helper/GoogleSearch"
 #Query = "CONFLICT (content): Merge conflict in README.md.Automatic merge failed: fix conflicts and then commit the result."
-path = "/Users/BARNES_3/Documents/niki/SE-16/git_helper/"
-
 
 def get_web_results(search_phrase):
     result = main_search_web(search_phrase)
@@ -20,6 +20,5 @@ def get_email_result(error_message):
     # res = 'q', 'a', 'l'
     return res
 
-#print get_email_result(Query)
 
 
