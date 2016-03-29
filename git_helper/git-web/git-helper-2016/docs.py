@@ -107,7 +107,7 @@ class BaseDocumentManager(object):
       logging.exception("Error adding documents.")
 
 class SearchContent(BaseDocumentManager):
-  _INDEX_NAME = "webContent"
+  _INDEX_NAME = "NewWebContent"
 
   TITLE = 'title'
   LINK = 'link'
@@ -210,7 +210,6 @@ class SearchContent(BaseDocumentManager):
   @classmethod
   def buildSearchContent(cls, params):
     params = cls._normalizeParams(params)
-    curr_doc = cls.getDocFromPid(params['pid'])
-    d = cls._createDocument(**params)
-
-    return prod
+    doc = cls._createDocument(**params)
+    cls.add(doc)
+    return
