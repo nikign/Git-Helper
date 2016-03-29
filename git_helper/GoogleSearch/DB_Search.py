@@ -26,6 +26,10 @@ def main_search(Query, WebQuery = None, EmailQuery = None,Path=None):
     [Query_clean] = SortUtils.cleanStrings([Query])
     QueryChars = SortUtils.target_words_extract(Query_clean)
 
+    QueryChars = [c for c in QueryChars if c in data.column.values]
+
+
+
 
     QueryTFIDFMatrix = data[QueryChars]
     RankResult_index = SortUtils.rank_tfidfMatrix(QueryTFIDFMatrix, 0)
