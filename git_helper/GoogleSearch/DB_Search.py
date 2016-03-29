@@ -18,8 +18,8 @@ def main_search(Query, WebQuery = None, EmailQuery = None,Path=None):
     data = pd.read_csv(Path+ '/DumpDB.csv')
     #data= pickle.load('DumpDB.dump')
 
-    Links = data['1847WebLinks']
-    Abstracts = data['1847WebAbstracts']
+    Links = data['1311WebLinks']
+    Abstracts = data['1311WebAbstracts']
 
 
     #extract chars from string error
