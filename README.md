@@ -29,6 +29,8 @@ An Command line helper based on decsion tree. It can detect git errors in real t
       c. [Local git helper] (https://github.com/nikign/Git-Helper/blob/master/git_helper/decision_tree/log.csv)
       
   6. [Evaluation plan](https://github.com/nikign/Git-Helper/issues/44)
+  7. Report: http://bit.ly/1qaXc4a
+  8. Presentation: http://bit.ly/1MiWfRH
 
 We plan to evaluate our three solutions in March. Before conducting the experiment, we will continue improving our tools and do system testings.  During the first and second weeks of March, we plan to build a repository with three common git errors novice user may face (including conflict errors and merge errors). 
 
