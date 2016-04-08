@@ -121,11 +121,16 @@ class Upload(Handler):
     def get(self):
         # The following is hardwired to the known format of the sample data file
       reader = csv.DictReader(
-          open("DumpdataGoogleApp.csv", 'rU'),
+          open("DumpdataGoogleApp_new.csv", 'rU'),
           ['link', 'question', 'answer', 'votes',
            'title'])
-      self.importData(reader)
+      self.importSingleData(reader)
       self.render("ok.html")
+
+    def importSingleData(self,reader):
+      logging.info('import single data')
+      for row in reader:
+        docs.SearchContent.buildSearchContent(row)
 
     def importData(self,reader):
       IMPORT_BATCH_SIZE = 5
@@ -166,6 +171,7 @@ class Search(Handler):
 class Delete(Handler):
     def get(self):
         docs.SearchContent.deleteAllInIndex()
+        self.render("ok.html")
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
