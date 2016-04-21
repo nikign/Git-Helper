@@ -15,8 +15,15 @@ init()
 # main entry
 def main():
     #os.chdir('/Users/BARNES_1/git/Conflict')
-
+    
+    #Set tool name according to command line parameter
+    if len(sys.argv) > 1:
+        constant.tool = sys.argv[1]
+    
+    print(constant.toolInstruction['shell'])
+    
     greeting()
+    askIdentification()
     
     logFile = None
     logWriter = None
@@ -69,6 +76,42 @@ def main():
 ###########################################
 # FUNCTIONS
 ###########################################
+# Ask if the user is member A or member B in the group 
+def askGroupRole():
+    groupRole = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    while (groupRole != 'A' and groupRole != 'B'):
+        print("Please input 'A' or 'B' for the question.")
+        groupRole = raw_input("Are you Group Member A or Group Member B? (A/B): ").upper()
+    return groupRole
+
+# Ask the number identificaiton assigned to the group
+def askGroupNumber():
+    groupNumber = -1
+    while True:
+        try:
+            stringNumber = raw_input("What is the group number assigned to your team?: ")
+            groupNumber = int(stringNumber)
+            if (groupNumber <= 40 and groupNumber >= 1):
+                break
+            else:
+                print("Your input is not valid. Please try again.")
+                print
+        except ValueError as e:
+            print("Your input is not valid. Please try again.")
+            print
+    return groupNumber
+
+# ask about user identification, e.g. member role (A or B)
+def askIdentification():
+    groupNumber = askGroupNumber()
+    print
+    groupRole = askGroupRole()
+    
+    if (groupRole == 'A'):
+        constant.logFilePath = str(groupNumber) + '-A-' + constant.tool + '-' + constant.logFilePath
+    else:
+        constant.logFilePath = str(groupNumber) + '-B-' + constant.tool + '-' + constant.logFilePath
+    return
 
 # display exit message
 def exitMessage():
@@ -155,8 +198,8 @@ def runCommonCommands(cmd):
     except subprocess.CalledProcessError as e:
         msg = processErrorMessage(e.output)
         print(msg)
-        #if isGitCommand(cmd):
-            #solutionProvider.provideSolution(cmd, msg)
+        
+        showToolInstruction()
         
         #logging
         constant.log['isError'] = True
@@ -201,6 +244,26 @@ def runCdCommand(cmd):
             #logging
             constant.log['isError'] = True
             constant.log['result'] = str(e)
+    return
+
+#display tool instruction
+def showToolInstruction():
+    instruction = []
+    
+    if constant.tool in constant.toolInstruction:
+        instruction = constant.toolInstruction[constant.tool]
+    else:
+        instruction = constant.toolInstruction['shell']
+    
+    print(Fore.GREEN + "*****************************" + Style.RESET_ALL)
+    print(Fore.GREEN + "* Helper Tool Instructions: *" + Style.RESET_ALL)
+    print(Fore.GREEN + "*****************************" + Style.RESET_ALL)
+    print
+    i = 1
+    for item in instruction:
+        print(str(i) + ". " + item)
+        i = i+1
+    print
     return
 
 #splitCommand into a list

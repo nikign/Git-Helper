@@ -3,9 +3,9 @@ import os
 import sys
 
 try:
-    toolName = "email"
+    toolName = "decision_tree"
     
-    shellPath =os.path.join("..","shell","shell.py")
+    shellPath =os.path.join("..","decision_tree","main.py")
     filepath = "python " + shellPath + " " + toolName
     
     if sys.platform.startswith("win32"):

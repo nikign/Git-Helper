@@ -18,7 +18,8 @@ def provideSolution(cmd, msg):
     
     if solutionAvailableCommands.has_key(gitcmd):
         solutionAvailableCommands[gitcmd](cmd, msg)
-        
+    elif msg.find('Authentication failed') >= 0:
+            solution = ["Please checkout you username and password."]    
     else:
         #raise NotImplementedError('solution for other commands has not implemented yet.')
         print('Sorry, solution for ' + combineCmd(cmd) + ' command is not available.\n')
@@ -154,6 +155,8 @@ def provideCheckoutSolution(cmd, msg):
             solution = ["Make sure you got your branch name correct.",
                         "Doing " + dimStr(command[0]) + " will retrieve all the remote branch to local machine.",
                         "Doing " + dimStr(command[1]) + " will automatically create a local branch to track the remote branch. Note that the <branch-name> should be same with one of your remote branch name (without 'origin/' part)."]
+        elif msg.find('Authentication failed') >= 0:
+            solution = ["Please checkout you username and password."]
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -205,6 +208,8 @@ def provideCommitSolution(cmd, msg):
                         'Repeat previous steps till all conflicts in files are resolved',
                         'Use ' + dimStr(command[0]) + ' to add revised files into this commit.',
                         'Use ' + dimStr(command[1]) + ' to commit to local repository.']
+        elif msg.find('Authentication failed') >= 0:
+            solution = ["Please checkout you username and password."]
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -248,6 +253,8 @@ def provideMergeSolution(cmd, msg):
                         'Repeat previous steps till all conflicts in files are resolved',
                         'Use ' + dimStr(command[0]) + ' to add revised files into this commit.',
                         'Use ' + dimStr(command[1]) + ' to commit to local repository.']
+        elif msg.find('Authentication failed') >= 0:
+            solution = ["Please checkout you username and password."]
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -271,7 +278,7 @@ def providePushSolution(cmd,msg):
     try:
         if msg.find('[rejected]') >= 0 and msg.find('failed to push some refs to') >= 0 and (msg.find('(fetch first)') >= 0 or msg.find('(non-fast-forward)') >= 0):
             explanation = 'The remote server has some work that you do not have on your local machine. You can do a git pull command to get the work you do not have locally.'
-            command = ['git pull']
+            command = ['git pull origin <branch-name>']
             solution = ["Please use " + dimStr(command[0]) + " command to get the work that you don't have locally."]
         elif msg.find('src refspec') >= 0 and msg.find('does not match any') >= 0:
             begin = msg.find('src refspec') + len('src refspec')
@@ -285,6 +292,8 @@ def providePushSolution(cmd,msg):
                         'Use ' + dimStr(command[0]) + ' to add files into this commit. Use "." or "-A" for <file-name> if you want to add all files in the repository to this commit.',
                         'Use ' + dimStr(command[1]) + ' to commit to local repository.',
                         'Use ' + dimStr(command[2]) + ' to push your commit to ' + branchName + ' of remote repository.']
+        elif msg.find('Authentication failed') >= 0:
+            solution = ["Please checkout you username and password."]
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
@@ -354,6 +363,8 @@ def providePullSolution(cmd,msg):
                         'Use ' + dimStr(command[1]) +' to commit to local repository.',
                         'Use ' + dimStr(command[2]) + ' to push your commit to remote repository.',
                         ]
+        elif msg.find('Authentication failed') >= 0:
+            solution = ["Please checkout you username and password."]
         else:
             explanation = constant.noSolutionMessage
             solution = constant.noSolutionSolution
